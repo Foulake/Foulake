@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Past;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -23,7 +24,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper=false)
 @Entity
 @ToString
-@Table(name="Paiements")
+@Table(name="Approvissionnements")
 public class Approvissionnement extends  BaseEntity{
 	
 	@Id
@@ -31,10 +32,11 @@ public class Approvissionnement extends  BaseEntity{
 	private Long idAppro;
 	
 	@Column(name="qteAppro")
+	@NotBlank(message = "Veuillez entrer la quantité d'approvissionnement !!")
 	private int qteAppro;
 	
 	@Column(name="dateAppro")
-	@Past(message = "La date de naissance ne peut être inférieur à la date courante !!")
+	@Past(message = "La date ne peut être inférieure à la date courante !!")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
 	private Date dateAppro;
 	

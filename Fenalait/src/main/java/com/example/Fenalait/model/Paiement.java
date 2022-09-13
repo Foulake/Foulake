@@ -28,21 +28,21 @@ public class Paiement extends BaseEntity{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long idPai;
+	private Long id;
 	
-	@Column(name="datePai")
+	@Column(name="date")
 	@NotBlank(message = "Veuillez entrer la date de la paiement !!")
-	private Date datePai;
+	private Date date;
 	
 	@Column(name="payee")
 	private boolean payee;
 	
-	@Column(name="qtePaie")
+	@Column(name="qte")
 	@NotBlank(message = "Veuillez entrer la quantité à payer !!")
-	private double qtePaie;
+	private double qte;
 	
-	@Column(name="montantPai")
-	private double montantPai;
+	@Column(name="montant")
+	private double montant;
 	
 	@ManyToOne
 	private Fournisseur fournisseur;
@@ -55,12 +55,4 @@ public class Paiement extends BaseEntity{
 		
 	}
 
-	public Paiement(Long idPai, Date datePai,boolean payee,double qtePaie, double montantPai) {
-		super();
-		this.idPai = idPai;
-		this.datePai = datePai;
-		this.payee = payee;
-		this.qtePaie = qtePaie;
-		this.montantPai = montantPai;
-	}
 }

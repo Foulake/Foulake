@@ -8,6 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -22,8 +24,10 @@ public class CategorieFournisseur extends  BaseEntity {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long idCatFour;
+	private Long id;
 	
+	@NotBlank(message = "Veuillez entrer la description de la categorie Fournisseur  !!")
+	@Size(min = 2, max = 125,  message = "La taille doit être comprise entre 2-125 ")
 	private String description;
 	
 	@OneToMany(mappedBy = "categorieFournisseur")
@@ -37,34 +41,8 @@ public class CategorieFournisseur extends  BaseEntity {
 		this.fournisseurs = fournisseurs;
 	}
 
-	public CategorieFournisseur() {
-		super();
-		
-	}
+	public CategorieFournisseur() {	}
 	
 	
-
-	public CategorieFournisseur(Long idCatFour, String description, List<Fournisseur> fournisseurs) {
-		super();
-		this.idCatFour = idCatFour;
-		this.description = description;
-		this.fournisseurs = fournisseurs;
-	}
-
-	public Long getIdCatFour() {
-		return idCatFour;
-	}
-
-	public void setIdCatFour(Long idCatFour) {
-		this.idCatFour = idCatFour;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
 
 }

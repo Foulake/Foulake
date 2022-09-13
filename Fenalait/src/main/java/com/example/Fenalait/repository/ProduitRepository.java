@@ -16,5 +16,7 @@ public interface ProduitRepository extends JpaRepository<Produit, Long>{
 			+"or p.dateExp like %?1%")
 	public List<Produit> findAll(String keyword);
 
+	public List<Produit> findByCategoryId(Long categoryId);
+
 	
 }
