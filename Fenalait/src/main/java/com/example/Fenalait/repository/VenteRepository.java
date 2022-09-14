@@ -13,10 +13,10 @@ import com.example.Fenalait.model.Vente;
 
 @Repository
 public interface VenteRepository extends JpaRepository<Vente, Long>{
-	Optional<Vente> findByIdVente(Long idVente);
+	Optional<Vente> findById(Long idVente);
 
 	@Query( "SELECT v FROM Vente v WHERE "
-			+ "CONCAT(v.idVente, '', v.quantite, '', v.montant, '', v.remise, '', v.date)"
+			+ "CONCAT(v.id, '', v.quantite, '', v.montant, '', v.remise, '', v.date)"
 			+ " LIKE %?1%")
 	public Page<Vente> findAllVente(String keyword, Pageable pageable);
 

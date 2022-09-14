@@ -14,7 +14,7 @@ import com.example.Fenalait.model.Client;
 @Repository
 public interface ClientRepository extends JpaRepository<Client, Long> {
 	
-	Optional<Client> findByIdClient(Long idClient);
+	Optional<Client> findById(Long id);
 	//faire une recherche
 	//@Query(value= "Select* from client where "
 		//	+"match(prenom_Client, nom_Client)"
@@ -23,7 +23,7 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
 	//public List<Client> findAll(String keyword);
 	
 	@Query("SELECT c FROM Client c WHERE "
-			+ "CONCAT(c.idClient, '', c.nomClient, '', c.telClient, '', c.prenomClient)" 
+			+ "CONCAT(c.id, '', c.nomClient, '', c.telClient, '', c.prenomClient)" 
 			+ " LIKE %?1%")
 	public Page<Client> findAll(String keyword, Pageable pageable);
 

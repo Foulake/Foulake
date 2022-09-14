@@ -1,5 +1,6 @@
 package com.example.Fenalait.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -12,14 +13,18 @@ import com.example.Fenalait.model.Fournisseur;
 
 @Repository
 public interface FournisseurRepository extends JpaRepository<Fournisseur, Long>{
-	Optional<Fournisseur> findByIdFour(Long idFour);
+	Optional<Fournisseur> findById(Long id);
 	
 
 	
 	@Query("SELECT f FROM Fournisseur f WHERE "
-			+ "CONCAT( f.idFour, '', f.nomFour, '',  f.prenomFour, '', f.dateFour, '', f.telFour )"
+			+ "CONCAT( f.id, '', f.nom, '',  f.prenom, '', f.dateFour, '', f.tel )"
 			+ " LIKE %?1%")
 	Page<Fournisseur> findAll(Pageable pageable, String keyword);
+
+
+
+	List<Fournisseur> findByCategorieFournisseurId(Long categoryFourId);
 	
 
 }

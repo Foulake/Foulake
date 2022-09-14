@@ -1,11 +1,11 @@
 package com.example.Fenalait.controller;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,7 +22,7 @@ import com.example.Fenalait.service.MagasinService;
 import com.example.Fenalait.utils.AppConstants;
 
 @RestController
-@RequestMapping("/api/v1/magasin")
+@RequestMapping("/api/v1/magasins")
 public class MagasinController {
 
 	private MagasinService magasinService;
@@ -31,14 +31,39 @@ public class MagasinController {
         this.magasinService = magasinService;
     }
 
-   
+   /**
     @PreAuthorize("hasRole('ADMIN')")
     // create blog magasin rest api
     @PostMapping("/api/v1/magasins")
     public ResponseEntity<MagasinRequestDto> createMagasin(@Valid @RequestBody MagasinRequestDto magasinRequestDto){
         return new ResponseEntity<>(magasinService.createMagasin(magasinRequestDto), HttpStatus.CREATED);
-    }
+    } 	**/
 
+   
+
+   /** @PostAuthorize("hasRole('ADMIN')")
+    // update magasin by id rest api
+    @PutMapping("/edit/{id}")
+    public ResponseEntity<MagasinRequestDto> updateMagasin(@Valid @RequestBody MagasinRequestDto magasinRequestDto, @PathVariable(name = "id") Long id){
+
+       MagasinRequestDto magasinResponse = magasinService.updateMagasin(magasinRequestDto, id);
+
+       return new ResponseEntity<>(magasinResponse, HttpStatus.OK);
+    } 	**/
+
+   /** @PostAuthorize("hasRole('ADMIN')")
+    // delete magasin rest api
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteMagasin(@PathVariable(name = "id") Long id){
+
+        magasinService.deleteMagasinById(id);
+
+        return new ResponseEntity<>("Magasin entity deleted successfully.", HttpStatus.OK);
+    }	**/
+    
+    
+    /** New Codes **/
+    
     // get all magasins rest api
     @GetMapping("/getAll")
     public MagasinResponse getAllMagasins(
@@ -52,29 +77,41 @@ public class MagasinController {
 
     // get magasin by id
     @GetMapping(value = "/get/{id}")
-    public ResponseEntity<MagasinRequestDto> getMagasinById(@PathVariable(name = "id") long id){
+    public ResponseEntity<MagasinRequestDto> getMagasinById(@PathVariable(name = "id") Long id){
         return ResponseEntity.ok(magasinService.getMagasinById(id));
     }
-
-    @PostAuthorize("hasRole('ADMIN')")
-    // update magasin by id rest api
-    @PutMapping("/edit/{id}")
-    public ResponseEntity<MagasinRequestDto> updateMagasin(@Valid @RequestBody MagasinRequestDto magasinRequestDto, @PathVariable(name = "id") long id){
-
-       MagasinRequestDto magasinResponse = magasinService.updateMagasin(magasinRequestDto, id);
-
-       return new ResponseEntity<>(magasinResponse, HttpStatus.OK);
-    }
-
-    @PostAuthorize("hasRole('ADMIN')")
-    // delete magasin rest api
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteMagasin(@PathVariable(name = "id") long id){
-
-        magasinService.deleteMagasinById(id);
-
-        return new ResponseEntity<>("Magasin entity deleted successfully.", HttpStatus.OK);
-    }
     
+    @PostMapping("/localite/{localiteId}/magasins")
+    public ResponseEntity<MagasinRequestDto> createMagasin(@PathVariable(value = "localiteId") Long localiteId,
+                                                    @Valid @RequestBody MagasinRequestDto magasinDto){
+        return new ResponseEntity<>(magasinService.createMagasin(localiteId, magasinDto), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/localite/{localiteId}/magasin")
+    public List<MagasinRequestDto> getMagasinsByLocaliteId(@PathVariable(value = "localiteId") Long localiteId){
+        return magasinService.getMagasinsByLocaliteId(localiteId);
+    }
+
+    @GetMapping("/localite/{localiteId}/magasin/{id}")
+    public ResponseEntity<MagasinRequestDto> getMagasinById(@PathVariable(value = "localiteId") Long localiteId,
+                                                     @PathVariable(value = "id") Long magasinId){
+        MagasinRequestDto magasinDto = magasinService.getMagasinById(localiteId, magasinId);
+        return new ResponseEntity<>(magasinDto, HttpStatus.OK);
+    }
+
+    @PutMapping("/localite/{localiteId}/magasin/{id}")
+    public ResponseEntity<MagasinRequestDto> updateMagasin(@PathVariable(value = "localiteId") Long localiteId,
+                                                    @PathVariable(value = "id") Long magasinId,
+                                                    @Valid @RequestBody MagasinRequestDto magasinDto){
+        MagasinRequestDto updatedMagasin = magasinService.updateMagasin(localiteId, magasinId, magasinDto);
+        return new ResponseEntity<>(updatedMagasin, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/localite/{localiteId}/magasin/{id}")
+    public ResponseEntity<String> deleteMagasin(@PathVariable(value = "localiteId") Long localiteId,
+                                                @PathVariable(value = "id") Long magasinId){
+        magasinService.deleteMagasin(localiteId, magasinId);
+        return new ResponseEntity<>("Magasin deleted successfully", HttpStatus.OK);
+    }
 
 }

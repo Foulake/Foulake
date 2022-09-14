@@ -13,9 +13,9 @@ public interface PaiementRepository extends JpaRepository<Paiement, Long>{
 
 	
 	
-	@Query("Select pt from Paiement pt Where pt.datePai like %?1%"
-			+"or pt.idPai like %?1%"
-			+"or pt.datePai like %?1%")
+	@Query("Select pt from Paiement pt Where pt.date like %?1%"
+			+"or pt.id like %?1%"
+			+"or pt.date like %?1%")
 	public List<Paiement> findAll(String keyword);
 
 }
