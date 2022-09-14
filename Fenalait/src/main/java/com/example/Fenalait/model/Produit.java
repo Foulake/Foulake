@@ -49,6 +49,9 @@ public class Produit extends  BaseEntity{
 
 	@ManyToOne
 	private Magasin magasin;
+	@ManyToOne
+	private User user;
+
 	
 	@ManyToOne
 	private User user;
