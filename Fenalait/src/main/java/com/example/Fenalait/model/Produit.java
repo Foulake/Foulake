@@ -53,8 +53,6 @@ public class Produit extends  BaseEntity{
 	private User user;
 
 	
-	@ManyToOne
-	private User user;
 	
 	//	@JsonInclude(JsonInclude.Include.NON_NULL)
 //	@Transient
