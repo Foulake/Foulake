@@ -22,7 +22,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper=false)
 @Entity
 @ToString
-@Table(name="Paiements")
+@Table(name="Clients")
 public class Client extends  BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -33,7 +33,7 @@ public class Fournisseur extends  BaseEntity {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private long id;
+	private Long id;
 	
 	@NotBlank(message = "Veuillez entrer le nom du Fournisseur !!")
 	@Size(min = 2, max = 125,  message = "La taille doit être comprise entre 2-125 ")

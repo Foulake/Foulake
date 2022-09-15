@@ -18,4 +18,15 @@ public interface ProduitService {
 	 ProduitDto updateProduit(Long categoryId, Long produitId, ProduitDto produitDto);
 
 	 void deleteProduit(Long categoryId, Long produitId);
+	 
+	 
+	 ProduitDto createMagasinProduit(Long magasinId, ProduitDto produitDto);
+
+	 List<ProduitDto> getProduitsByMagasinId(Long magasinId);
+
+	 ProduitDto getMagasinProduitById(Long magasinId, Long produitId);
+
+	 ProduitDto updateMagasinProduit(Long magasinId, Long produitId, ProduitDto produitDto);
+
+	 void deleteMagasinProduit(Long magasinId, Long produitId);
 }

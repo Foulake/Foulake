@@ -46,7 +46,7 @@ public class Vente extends  BaseEntity{
 	private Date date;
 	
 	@ManyToOne
-	private  Produit produit;
+	private Produit produit;
 	
 	@ManyToOne
 	private Client client;
@@ -54,7 +54,7 @@ public class Vente extends  BaseEntity{
 	public Vente() {
 		super();
 	}
-
+	
 	public Vente(Long id, double quantite, double montant, boolean remise, Date date) {
 		super();
 		this.id = id;

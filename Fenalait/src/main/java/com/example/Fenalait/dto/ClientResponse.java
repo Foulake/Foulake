@@ -11,10 +11,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ClientResponse {
 
-	private List<ClientResponse> content;
+	private List<ClientDto> content;
     private int pageNo;
     private int pageSize;
     private long totalElements;
     private int totalPages;
     private boolean last;
+	
 }

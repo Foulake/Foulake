@@ -49,14 +49,14 @@ public class LocaliteController {
 
     // get localite by id
     @GetMapping(value = "/get/{id}")
-    public ResponseEntity<LocaliteRequestDto> getLocaliteById(@PathVariable(name = "id") long id){
+    public ResponseEntity<LocaliteRequestDto> getLocaliteById(@PathVariable(name = "id") Long id){
         return ResponseEntity.ok(localiteService.getLocaliteById(id));
     }
 
-    @PostAuthorize("hasRole('ADMIN')")
+    //@PostAuthorize("hasRole('ADMIN')")
     // update localite by id rest api
     @PutMapping("/edit/{id}")
-    public ResponseEntity<LocaliteRequestDto> updateLocalite(@Valid @RequestBody LocaliteRequestDto localiteRequestDto, @PathVariable(name = "id") long id){
+    public ResponseEntity<LocaliteRequestDto> updateLocalite(@Valid @RequestBody LocaliteRequestDto localiteRequestDto, @PathVariable(name = "id") Long id){
 
        LocaliteRequestDto localiteResponse = localiteService.updateLocalite(localiteRequestDto, id);
 
@@ -66,7 +66,7 @@ public class LocaliteController {
     @PostAuthorize("hasRole('ADMIN')")
     // delete localite rest api
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteLocalite(@PathVariable(name = "id") long id){
+    public ResponseEntity<String> deleteLocalite(@PathVariable(name = "id") Long id){
 
         localiteService.deleteLocaliteById(id);
 

@@ -17,7 +17,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper=false)
 @Entity
 @ToString
-@Table(name="Employe")
+@Table(name="Employes")
 public class Employe extends  BaseEntity {
 @Id	
 @GeneratedValue

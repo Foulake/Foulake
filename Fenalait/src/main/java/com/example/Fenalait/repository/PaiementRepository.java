@@ -18,4 +18,6 @@ public interface PaiementRepository extends JpaRepository<Paiement, Long>{
 			+"or pt.date like %?1%")
 	public List<Paiement> findAll(String keyword);
 
+	public List<Paiement> findByFournisseurId(Long fournisseurId);
+
 }

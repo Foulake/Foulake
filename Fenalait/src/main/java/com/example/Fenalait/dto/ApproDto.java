@@ -12,7 +12,7 @@ import lombok.Data;
 @Data
 public class ApproDto {
 
-	private Long idAppro;
+	private Long id;
 	
 	@NotBlank(message = "Veuillez entrer la quantité d'approvissionnement !!")
 	private int qteAppro;

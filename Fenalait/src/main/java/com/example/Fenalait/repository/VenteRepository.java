@@ -1,6 +1,7 @@
 package com.example.Fenalait.repository;
 
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -19,6 +20,10 @@ public interface VenteRepository extends JpaRepository<Vente, Long>{
 			+ "CONCAT(v.id, '', v.quantite, '', v.montant, '', v.remise, '', v.date)"
 			+ " LIKE %?1%")
 	public Page<Vente> findAllVente(String keyword, Pageable pageable);
+
+	List<Vente> findByClientId(Long clientId);
+
+	List<Vente> findByProduitId(Long produitId);
 
 
 

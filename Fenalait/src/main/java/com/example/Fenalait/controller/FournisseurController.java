@@ -12,12 +12,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Fenalait.dto.FournisseurDto;
 import com.example.Fenalait.service.FournisseurService;
 
 @RestController
+@RequestMapping("/api/v1/fournisseurs")
 public class FournisseurController {
 
 	private FournisseurService fournisseurService;
@@ -26,7 +28,7 @@ public class FournisseurController {
         this.fournisseurService = fournisseurService;
     }
 
-    @PostMapping("/category/{categoryId}/fournisseurs")
+    @PostMapping("/category/{categoryId}/add")
     public ResponseEntity<FournisseurDto> createFournisseur(@PathVariable(value = "categoryId") long categoryId,
                                                     @Valid @RequestBody FournisseurDto fournisseurDto){
         return new ResponseEntity<>(fournisseurService.createFournisseur(categoryId, fournisseurDto), HttpStatus.CREATED);

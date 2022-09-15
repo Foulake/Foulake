@@ -10,8 +10,10 @@ import com.example.Fenalait.dto.ProduitDto;
 import com.example.Fenalait.exception.ResourceNotFoundException;
 import com.example.Fenalait.exception.BlogAPIException;
 import com.example.Fenalait.model.Category;
+import com.example.Fenalait.model.Magasin;
 import com.example.Fenalait.model.Produit;
 import com.example.Fenalait.repository.CategoryRepository;
+import com.example.Fenalait.repository.MagasinRepository;
 import com.example.Fenalait.repository.ProduitRepository;
 import com.example.Fenalait.service.ProduitService;
 
@@ -22,12 +24,14 @@ public class ProduitServiceImpl implements ProduitService{
 	
 	private CategoryRepository categoryRepository;
 	
+	private  MagasinRepository magasinRepository;
 	
 
-	public ProduitServiceImpl(ProduitRepository produitRepository, CategoryRepository categoryRepository) {
+	public ProduitServiceImpl(ProduitRepository produitRepository, CategoryRepository categoryRepository, MagasinRepository magasinRepository) {
 		super();
 		this.produitRepository = produitRepository;
 		this.categoryRepository = categoryRepository;
+		this.magasinRepository = magasinRepository;
 	}
 
 	@Override
@@ -113,6 +117,93 @@ public class ProduitServiceImpl implements ProduitService{
         produitRepository.delete(produit);
 	}
 
+	
+	/** Pour Magasin **/
+	
+	@Override
+	public ProduitDto createMagasinProduit(Long magasinId, ProduitDto produitDto) {
+		Produit produit = mapToEntity(produitDto);
+
+        // retrieve magasin entity by id
+        Magasin magasin = magasinRepository.findById(magasinId).orElseThrow(
+                () -> new ResourceNotFoundException("Magasin", "id", magasinId));
+
+        // set magasin to produit entity
+        produit.setMagasin(magasin);
+
+        // produit entity to DB
+        Produit newProduit =  produitRepository.save(produit);
+
+        return mapToDTO(newProduit);
+	}
+
+	@Override
+	public List<ProduitDto> getProduitsByMagasinId(Long magasinId) {
+		// retrieve produits by magasinId
+        List<Produit> produits = produitRepository.findByMagasinId(magasinId);
+
+        // convert list of produit entities to list of produit dto's
+        return produits.stream().map(produit -> mapToDTO(produit)).collect(Collectors.toList());
+	}
+
+	@Override
+	public ProduitDto getMagasinProduitById(Long magasinId, Long produitId) {
+		// retrieve magasin entity by id
+        Magasin magasin = magasinRepository.findById(magasinId).orElseThrow(
+                () -> new ResourceNotFoundException("Magasin", "id", magasinId));
+
+        // retrieve produit by id
+        Produit produit = produitRepository.findById(produitId).orElseThrow(() ->
+                new ResourceNotFoundException("Produit", "id", produitId));
+
+        if(!produit.getMagasin().getId().equals(magasin.getId())){
+            throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Produit does not belong to magasin");
+        }
+
+        return mapToDTO(produit);
+	}
+
+	@Override
+	public ProduitDto updateMagasinProduit(Long magasinId, Long produitId, ProduitDto produitDto) {
+		// retrieve magasin entity by id
+        Magasin magasin = magasinRepository.findById(magasinId).orElseThrow(
+                () -> new ResourceNotFoundException("Magasin", "id", magasinId));
+
+        // retrieve produit by id
+        Produit produit = produitRepository.findById(produitId).orElseThrow(() ->
+                new ResourceNotFoundException("Produit", "id", produitId));
+
+        if(!produit.getMagasin().getId().equals(magasin.getId())){
+            throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Produit does not belongs to magasin");
+        }
+
+        produit.setNomPrdt(produitDto.getNomPrdt());
+        produit.setQte(produitDto.getQte());
+        produit.setDateExp(produitDto.getDateExp());
+        produit.setDate(produitDto.getDate());
+        
+        Produit updatedProduit = produitRepository.save(produit);
+        return mapToDTO(updatedProduit);
+	}
+
+	@Override
+	public void deleteMagasinProduit(Long magasinId, Long produitId) {
+		// retrieve magasin entity by id
+        Magasin magasin = magasinRepository.findById(magasinId).orElseThrow(
+                () -> new ResourceNotFoundException("Magasin", "id", magasinId));
+
+        // retrieve produit by id
+        Produit produit = produitRepository.findById(produitId).orElseThrow(() ->
+                new ResourceNotFoundException("Produit", "id", produitId));
+
+        if(!produit.getMagasin().getId().equals(magasin.getId())){
+            throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Produit does not belongs to magasin");
+        }
+
+        produitRepository.delete(produit);
+	}
+	
+	
 	
 	private ProduitDto mapToDTO(Produit produit){
      //   ProduitDto produitDto = mapper.map(produit, ProduitDto.class);

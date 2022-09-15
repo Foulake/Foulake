@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,6 +22,7 @@ import com.example.Fenalait.service.CategoryFourService;
 import com.example.Fenalait.utils.AppConstants;
 
 @RestController
+@RequestMapping("/api/v1/categorieFournisseurs")
 public class CategoryFourController {
 
 	private CategoryFourService categoryFourService;
@@ -32,7 +34,7 @@ public class CategoryFourController {
    
     @PreAuthorize("hasRole('ADMIN')")
     // create blog categoryFour rest api
-    @PostMapping("/api/v1/categoryFours")
+    @PostMapping("/add")
     public ResponseEntity<CategoryFourDto> createCategoryFour(@Valid @RequestBody CategoryFourDto categoryFourDto){
         return new ResponseEntity<>(categoryFourService.createCategoryFour(categoryFourDto), HttpStatus.CREATED);
     }

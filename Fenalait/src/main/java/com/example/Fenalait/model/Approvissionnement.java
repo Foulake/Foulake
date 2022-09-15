@@ -29,7 +29,7 @@ public class Approvissionnement extends  BaseEntity{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY )
-	private Long idAppro;
+	private Long id;
 	
 	@Column(name="qteAppro")
 	@NotBlank(message = "Veuillez entrer la quantité d'approvissionnement !!")
@@ -53,14 +53,14 @@ public class Approvissionnement extends  BaseEntity{
 	@JoinColumn(name="id_Paie")
 	private Paiement paiement;
 	
-	public Approvissionnement(Long idAppro) {
-		this.idAppro=idAppro;
+	public Approvissionnement(Long id) {
+		this.id=id;
 		
 	}
 	
-	public Approvissionnement(Long idAppro, int qteAppro, Date dateAppro) {
+	public Approvissionnement(Long id, int qteAppro, Date dateAppro) {
 		super();
-		this.idAppro = idAppro;
+		this.id = id;
 		this.qteAppro = qteAppro;
 		this.dateAppro = dateAppro;
 	}
@@ -103,7 +103,7 @@ public class Approvissionnement extends  BaseEntity{
 	}
 
 	public Long getIdAppro() {
-		return idAppro;
+		return id;
 	}
 
 	public Paiement getPaiement() {

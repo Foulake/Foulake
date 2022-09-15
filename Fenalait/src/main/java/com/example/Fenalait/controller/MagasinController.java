@@ -81,7 +81,7 @@ public class MagasinController {
         return ResponseEntity.ok(magasinService.getMagasinById(id));
     }
     
-    @PostMapping("/localite/{localiteId}/magasins")
+    @PostMapping("/localite/{localiteId}/magasin")
     public ResponseEntity<MagasinRequestDto> createMagasin(@PathVariable(value = "localiteId") Long localiteId,
                                                     @Valid @RequestBody MagasinRequestDto magasinDto){
         return new ResponseEntity<>(magasinService.createMagasin(localiteId, magasinDto), HttpStatus.CREATED);

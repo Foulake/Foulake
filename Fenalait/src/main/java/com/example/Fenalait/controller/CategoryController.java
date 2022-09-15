@@ -4,8 +4,6 @@ import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,9 +30,9 @@ public class CategoryController {
     }
 
    
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     // create blog category rest api
-    @PostMapping("/api/v1/categorys")
+    @PostMapping("/add")
     public ResponseEntity<CategoryDto> createCategory(@Valid @RequestBody CategoryDto categoryDto){
         return new ResponseEntity<>(categoryService.createCategory(categoryDto), HttpStatus.CREATED);
     }
@@ -56,7 +54,7 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.getCategoryById(id));
     }
 
-    @PostAuthorize("hasRole('ADMIN')")
+    //@PostAuthorize("hasRole('ADMIN')")
     // update category by id rest api
     @PutMapping("/edit/{id}")
     public ResponseEntity<CategoryDto> updateCategory(@Valid @RequestBody CategoryDto categoryDto, @PathVariable(name = "id") long id){
@@ -66,7 +64,7 @@ public class CategoryController {
        return new ResponseEntity<>(categoryResponse, HttpStatus.OK);
     }
 
-    @PostAuthorize("hasRole('ADMIN')")
+    //@PostAuthorize("hasRole('ADMIN')")
     // delete category rest api
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteCategory(@PathVariable(name = "id") long id){
