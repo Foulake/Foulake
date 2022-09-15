@@ -85,9 +85,7 @@ public class UserController {
 	    	
 	    	PasswordEncoder encoder = new BCryptPasswordEncoder();
 			user.setPassword(encoder.encode(userDetails.getPassword()));
-			//user.setConfirmPassword(encoder.encode(userDetails.getConfirmPassword()));
 	    	user.setEmail(userDetails.getEmail());
-	    	//user.setConfirmEmail(userDetails.getConfirmEmail());
 	    	user.setRoles(user.getRoles());
 	    	user.setNom(userDetails.getNom());
 	    	user.setPrenom(userDetails.getPrenom());	    	
