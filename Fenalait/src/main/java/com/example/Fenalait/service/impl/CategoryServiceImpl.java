@@ -103,4 +103,30 @@ public class CategoryServiceImpl implements CategoryService{
         category.setNom(categoryDto.getNom());
         return category;
     }
+
+	@Override
+	public CategoryResponse searchCategoryFull(int pageNo, int pageSize, String sortBy, String sortDir,
+			String keywords) {
+		Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        // create Pageable instance
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        
+        Page<Category> categoryFours = categoryRepository.findAll(pageable, keywords);
+        
+        List<Category> listOfCategoryFours = categoryFours.getContent();
+        
+        List<CategoryDto> content = listOfCategoryFours.stream().map(categoryFour -> mapToDTO(categoryFour)).collect(Collectors.toList());
+		
+        CategoryResponse categoryResponse = new CategoryResponse();
+        categoryResponse.setContent(content);
+        categoryResponse.setPageNo(categoryFours.getNumber());
+        categoryResponse.setPageSize(categoryFours.getSize());
+        categoryResponse.setTotalElements(categoryFours.getTotalElements());
+        categoryResponse.setTotalPages(categoryFours.getTotalPages());
+        categoryResponse.setLast(categoryFours.isLast());
+
+        return categoryResponse;
+	}
 }

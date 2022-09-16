@@ -17,4 +17,7 @@ public interface CategoryFourService {
     CategoryFourDto updateCategoryFour(CategoryFourDto categoryFourDto, Long id);
 
     void deleteCategoryFourById(Long id);
+
+	CategoryFourResponse searchCategoryFourFull(int pageNo, int pageSize, String sortBy, String sortDir, String keywords);
+
 }

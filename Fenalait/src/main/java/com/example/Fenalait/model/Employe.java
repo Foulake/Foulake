@@ -1,9 +1,12 @@
 package com.example.Fenalait.model;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -21,7 +24,7 @@ import lombok.ToString;
 public class Employe extends  BaseEntity {
 @Id	
 @GeneratedValue
-private long id;
+private Long id;
 
 @Column(name="firstName")
 @NotBlank(message = "Veuillez entrer le prénom de la categorie !!")
@@ -45,7 +48,11 @@ public Employe() {
 	
 }
 
-public Employe(long id, String firstName, String lastName, String email) {
+@OneToMany(mappedBy = "fournisseur")
+private List<Paiement> paiements;
+
+
+public Employe(Long id, String firstName, String lastName, String email) {
 	super();
 	this.id = id;
 	this.firstName = firstName;

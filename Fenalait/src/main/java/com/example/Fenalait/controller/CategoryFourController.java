@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Fenalait.dto.CategoryFourDto;
 import com.example.Fenalait.dto.CategoryFourResponse;
+import com.example.Fenalait.dto.CategoryFourResponse;
 import com.example.Fenalait.service.CategoryFourService;
 import com.example.Fenalait.utils.AppConstants;
 
@@ -74,5 +75,17 @@ public class CategoryFourController {
         categoryFourService.deleteCategoryFourById(id);
 
         return new ResponseEntity<>("CategoryFour entity deleted successfully.", HttpStatus.OK);
+    }
+    
+    @GetMapping("/search/full/{keywords}")
+	public  ResponseEntity<CategoryFourResponse> searchProductByFull(
+			 @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+	            @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+	            @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+	            @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir,
+			@PathVariable("keywords") String keywords){
+		CategoryFourResponse result= categoryFourService.searchCategoryFourFull(pageNo, pageSize, sortBy, sortDir, keywords);
+				
+		return new ResponseEntity<CategoryFourResponse>(result, HttpStatus.OK);
     }
 }

@@ -110,4 +110,29 @@ private ClientRepository clientRepository;
         return client;
     }
 
+	@Override
+	public ClientResponse searchClientFull(int pageNo, int pageSize, String sortBy, String sortDir, String keywords) {
+		Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        // create Pageable instance
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        
+        Page<Client> clients = clientRepository.findAll(pageable, keywords);
+        
+        List<Client> listOfClients = clients.getContent();
+        
+        List<ClientDto> content = listOfClients.stream().map(client -> mapToDTO(client)).collect(Collectors.toList());
+		
+        ClientResponse clientResponse = new ClientResponse();
+        clientResponse.setContent(content);
+        clientResponse.setPageNo(clients.getNumber());
+        clientResponse.setPageSize(clients.getSize());
+        clientResponse.setTotalElements(clients.getTotalElements());
+        clientResponse.setTotalPages(clients.getTotalPages());
+        clientResponse.setLast(clients.isLast());
+
+        return clientResponse;
+
+	}
 }

@@ -75,4 +75,17 @@ public class ClientController {
         return new ResponseEntity<>("Client entity deleted successfully.", HttpStatus.OK);
     }
     
+    /** Full Serach **/
+	@GetMapping("/search/full/{keywords}")
+	public  ResponseEntity<ClientResponse> searchProductByFull(
+			 @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+	            @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+	            @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+	            @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir,
+			@PathVariable("keywords") String keywords){
+		ClientResponse result= clientService.searchClientFull(pageNo, pageSize, sortBy, sortDir, keywords);
+				
+		return new ResponseEntity<ClientResponse>(result, HttpStatus.OK);
+	
+	}
 }

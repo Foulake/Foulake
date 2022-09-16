@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.Fenalait.dto.ProduitDto;
+import com.example.Fenalait.dto.ProduitResponse;
 
 @Service
 public interface ProduitService {
@@ -29,4 +30,6 @@ public interface ProduitService {
 	 ProduitDto updateMagasinProduit(Long magasinId, Long produitId, ProduitDto produitDto);
 
 	 void deleteMagasinProduit(Long magasinId, Long produitId);
+
+	ProduitResponse searchProduitFull(int pageNo, int pageSize, String sortBy, String sortDir, String keywords);
 }

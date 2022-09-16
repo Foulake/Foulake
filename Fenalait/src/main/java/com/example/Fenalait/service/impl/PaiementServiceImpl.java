@@ -3,10 +3,15 @@ package com.example.Fenalait.service.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.example.Fenalait.dto.PaiementDto;
+import com.example.Fenalait.dto.PaiementResponse;
 import com.example.Fenalait.exception.BlogAPIException;
 import com.example.Fenalait.exception.ResourceNotFoundException;
 import com.example.Fenalait.model.Fournisseur;
@@ -133,4 +138,30 @@ public class PaiementServiceImpl implements PaiementService{
 	        paiement.setPayee(paiementDto.isPayee());
 	        return  paiement;
 	    }
+
+		@Override
+		public PaiementResponse searchPaiementFull(int pageNo, int pageSize, String sortBy, String sortDir,
+				String keywords) {
+			Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+	                : Sort.by(sortBy).descending();
+
+	        // create Pageable instance
+	        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+	        
+	        Page<Paiement> paiements = paiementRepository.findAll(pageable, keywords);
+	        
+	        List<Paiement> listOfPaiements = paiements.getContent();
+	        
+	        List<PaiementDto> content = listOfPaiements.stream().map(categoryFour -> mapToDTO(categoryFour)).collect(Collectors.toList());
+			
+	        PaiementResponse paiementResponse = new PaiementResponse();
+	        paiementResponse.setContent(content);
+	        paiementResponse.setPageNo(paiements.getNumber());
+	        paiementResponse.setPageSize(paiements.getSize());
+	        paiementResponse.setTotalElements(paiements.getTotalElements());
+	        paiementResponse.setTotalPages(paiements.getTotalPages());
+	        paiementResponse.setLast(paiements.isLast());
+
+	        return paiementResponse;
+		}
 }

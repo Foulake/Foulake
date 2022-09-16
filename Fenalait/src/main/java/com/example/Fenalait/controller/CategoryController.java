@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Fenalait.dto.CategoryDto;
 import com.example.Fenalait.dto.CategoryResponse;
+import com.example.Fenalait.dto.CategoryResponse;
 import com.example.Fenalait.service.CategoryService;
 import com.example.Fenalait.utils.AppConstants;
 
@@ -74,4 +75,16 @@ public class CategoryController {
         return new ResponseEntity<>("Category entity deleted successfully.", HttpStatus.OK);
     }
     
+    @GetMapping("/search/full/{keywords}")
+	public  ResponseEntity<CategoryResponse> searchCategoryByFull(
+			 @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
+	            @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+	            @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
+	            @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir,
+			@PathVariable("keywords") String keywords){
+		CategoryResponse result= categoryService.searchCategoryFull(pageNo, pageSize, sortBy, sortDir, keywords);
+				
+		return new ResponseEntity<CategoryResponse>(result, HttpStatus.OK);
+    
+    }
 }

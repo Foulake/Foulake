@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.Fenalait.dto.PaiementDto;
+import com.example.Fenalait.dto.PaiementResponse;
 
 @Service
 public interface PaiementService {
@@ -18,5 +19,7 @@ public interface PaiementService {
 	 PaiementDto updatePaiement(Long fournisseurId, Long paiementId, PaiementDto paiementDto);
 
 	 void deletePaiement(Long fournisseurId, Long paiementId);
+
+	PaiementResponse searchPaiementFull(int pageNo, int pageSize, String sortBy, String sortDir, String keywords);
 	 
 }

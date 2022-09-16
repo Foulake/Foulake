@@ -27,4 +27,6 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
 			+ " LIKE %?1%")
 	public Page<Client> findAll(String keyword, Pageable pageable);
 
+	public Page<Client> findAll(Pageable pageable, String keywords);
+
 }

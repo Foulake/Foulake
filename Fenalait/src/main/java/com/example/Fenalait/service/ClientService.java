@@ -18,5 +18,7 @@ public interface ClientService {
     ClientDto updateClient(ClientDto clientDto, Long id);
 
     void deleteClientById(Long id);
-    
+
+	ClientResponse searchClientFull(int pageNo, int pageSize, String sortBy, String sortDir, String keywords);
+
 }

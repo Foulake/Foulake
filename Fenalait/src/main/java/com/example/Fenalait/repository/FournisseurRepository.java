@@ -21,8 +21,6 @@ public interface FournisseurRepository extends JpaRepository<Fournisseur, Long>{
 	@Query("SELECT f FROM Fournisseur f WHERE "
 			+ "CONCAT( f.id, '', f.nom, '',  f.prenom, '', f.dateFour, '', f.tel )"
 			+ " LIKE %?1%")
-	
-
 	Page<Fournisseur> findAll(Pageable pageable, String keyword);
 
 

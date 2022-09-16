@@ -16,4 +16,6 @@ public interface EmployeRepository extends JpaRepository<Employe, Long>{
 			+ " LIKE %?1%")
 	Page<Employe> findAll(String keyword, Pageable pageable);
 
+	Page<Employe> findAll(Pageable pageable, String keywords);
+
 }

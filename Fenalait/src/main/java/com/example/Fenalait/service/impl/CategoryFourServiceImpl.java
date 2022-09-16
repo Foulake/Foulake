@@ -103,4 +103,31 @@ public class CategoryFourServiceImpl implements CategoryFourService{
         category.setDescription(categoryDto.getDescription());
         return category;
     }
+
+    @Override
+	public CategoryFourResponse searchCategoryFourFull(int pageNo, int pageSize, String sortBy, String sortDir,
+			String keywords) {
+		Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        // create Pageable instance
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        
+        Page<CategorieFournisseur> categoryFours = categoryRepository.findAll(pageable, keywords);
+        
+        List<CategorieFournisseur> listOfCategoryFours = categoryFours.getContent();
+        
+        List<CategoryFourDto> content = listOfCategoryFours.stream().map(categoryFour -> mapToDTO(categoryFour)).collect(Collectors.toList());
+		
+        CategoryFourResponse categoryFourResponse = new CategoryFourResponse();
+        categoryFourResponse.setContent(content);
+        categoryFourResponse.setPageNo(categoryFours.getNumber());
+        categoryFourResponse.setPageSize(categoryFours.getSize());
+        categoryFourResponse.setTotalElements(categoryFours.getTotalElements());
+        categoryFourResponse.setTotalPages(categoryFours.getTotalPages());
+        categoryFourResponse.setLast(categoryFours.isLast());
+
+        return categoryFourResponse;
+	}
+
 }

@@ -1,6 +1,9 @@
 package com.example.Fenalait.repository;
 
 import java.util.List;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -19,6 +22,8 @@ public interface ProduitRepository extends JpaRepository<Produit, Long>{
 	public List<Produit> findByCategoryId(Long categoryId);
 
 	public List<Produit> findByMagasinId(Long magasinId);
+
+	public Page<Produit> findAll(Pageable pageable, String keywords);
 
 	
 }

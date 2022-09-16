@@ -17,4 +17,6 @@ public interface CategoryService {
     CategoryDto updateCategory(CategoryDto categoryDto, Long id);
 
     void deleteCategoryById(Long id);
+
+	CategoryResponse searchCategoryFull(int pageNo, int pageSize, String sortBy, String sortBy2, String keywords);
 }
