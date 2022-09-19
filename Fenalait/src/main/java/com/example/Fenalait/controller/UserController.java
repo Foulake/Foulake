@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.Fenalait.dto.UserRequestDto;
 import com.example.Fenalait.dto.UserResponseDto;
-import com.example.Fenalait.exception.ResourceNotFoundException;
+import com.example.Fenalait.exception.ResourceNotFoundExceptions;
 import com.example.Fenalait.model.Role;
 import com.example.Fenalait.model.User;
 import com.example.Fenalait.repository.UserRepository;
@@ -56,7 +56,7 @@ public class UserController {
 	  @GetMapping("/get/profile")
 	    public ResponseEntity<User> getUserByProfile(Principal principal){
 	    	User user = repo.findByEmail(principal.getName())
-	    		.orElseThrow(() -> new ResourceNotFoundException("Il n'existe pas un Utilisateur avec E-mail :" +principal.getName()));
+	    		.orElseThrow(() -> new ResourceNotFoundExceptions("Il n'existe pas un Utilisateur avec E-mail :" +principal.getName()));
 	    	return ResponseEntity.ok(user);
 	    }
 	 
@@ -74,14 +74,14 @@ public class UserController {
 	  
 	    public ResponseEntity<User> getUserById(@PathVariable Long id){
 	    	User user = repo.findById(id)
-	    		.orElseThrow(() -> new ResourceNotFoundException("Il n'existe pas un Utilisateur avec id :" +id));
+	    		.orElseThrow(() -> new ResourceNotFoundExceptions("Il n'existe pas un Utilisateur avec id :" +id));
 	    	return ResponseEntity.ok(user);
 	    }
 	    
 	    @PutMapping("/edit/{id}")
 	    public ResponseEntity<User> updateUser(@Valid @RequestBody User userDetails, @PathVariable Long id){
 	    	User user = repo.findById(id)
-	    			.orElseThrow(()-> new ResourceNotFoundException(" Il n'existe pas un Utilisateur avec ID :" +id));
+	    			.orElseThrow(()-> new ResourceNotFoundExceptions(" Il n'existe pas un Utilisateur avec ID :" +id));
 	    	
 	    	PasswordEncoder encoder = new BCryptPasswordEncoder();
 			user.setPassword(encoder.encode(userDetails.getPassword()));
@@ -97,7 +97,7 @@ public class UserController {
 	    @DeleteMapping("/delete/{id}")
 	    public ResponseEntity<Map<String, Boolean>> deleteUser(@PathVariable Long id){
 	    	User user = repo.findById(id)
-	        		.orElseThrow(() -> new ResourceNotFoundException("Il n'existe pas un Utilisateur avec id :" +id));
+	        		.orElseThrow(() -> new ResourceNotFoundExceptions("Il n'existe pas un Utilisateur avec id :" +id));
 	    	repo.delete(user);
 	    		
 	        	Map<String, Boolean> response =new  HashMap<>();

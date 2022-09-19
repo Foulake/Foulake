@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.Fenalait.exception.ResourceNotFoundException;
+import com.example.Fenalait.exception.ResourceNotFoundExceptions;
 import com.example.Fenalait.model.Role;
 import com.example.Fenalait.model.User;
 import com.example.Fenalait.repository.RoleRepository;
@@ -81,7 +81,7 @@ public class AuthController {
     public ResponseEntity<?> register(@RequestBody @Valid User user) {
 
     	if(repository.findByEmail(user.getEmail()).isPresent()) {
-    		throw new ResourceNotFoundException(" Il existe bien un compte avec cet E-mail : " +user.getEmail());
+    		throw new ResourceNotFoundExceptions(" Il existe bien un compte avec cet E-mail : " +user.getEmail());
     	}
     	
     	Role roleUser = roleRepository.findByName("ROLE_CUSTOMER");
