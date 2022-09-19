@@ -32,7 +32,7 @@ public class CategoryFourController {
     }
 
    
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     // create blog categoryFour rest api
     @PostMapping("/add")
     public ResponseEntity<CategoryFourDto> createCategoryFour(@Valid @RequestBody CategoryFourDto categoryFourDto){

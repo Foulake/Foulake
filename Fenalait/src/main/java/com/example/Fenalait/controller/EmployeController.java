@@ -31,7 +31,7 @@ public class EmployeController {
     }
 
    
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     // create blog employe rest api
     @PostMapping("/add")
     public ResponseEntity<EmployeDto> createEmploye(@Valid @RequestBody EmployeDto employeDto){

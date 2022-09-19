@@ -49,17 +49,9 @@ public class Produit extends  BaseEntity{
 
 	@ManyToOne
 	private Magasin magasin;
-<<<<<<< HEAD
-	 
+	
 	@ManyToOne
 	private User user;
-=======
-	@ManyToOne
-	private User user;
-	
-	
-	
->>>>>>> e41d397de22866780626fac3c1d70d850c0a4e8f
 	
 	//	@JsonInclude(JsonInclude.Include.NON_NULL)
 //	@Transient

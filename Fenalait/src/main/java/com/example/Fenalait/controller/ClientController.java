@@ -31,7 +31,7 @@ public class ClientController {
     }
 
    
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     // create blog client rest api
     @PostMapping("/add")
     public ResponseEntity<ClientDto> createClient(@Valid @RequestBody ClientDto clientDto){
