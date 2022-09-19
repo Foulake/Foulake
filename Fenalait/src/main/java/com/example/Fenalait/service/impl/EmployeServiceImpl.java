@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
 import com.example.Fenalait.dto.EmployeDto;
 import com.example.Fenalait.dto.EmployeResponse;
@@ -15,6 +16,7 @@ import com.example.Fenalait.model.Employe;
 import com.example.Fenalait.repository.EmployeRepository;
 import com.example.Fenalait.service.EmployeService;
 
+@Service
 public class EmployeServiceImpl implements EmployeService{
 
 private EmployeRepository employeRepository; 

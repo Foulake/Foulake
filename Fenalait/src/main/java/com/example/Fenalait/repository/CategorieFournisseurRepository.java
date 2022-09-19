@@ -11,10 +11,8 @@ import com.example.Fenalait.model.CategorieFournisseur;
 @Repository
 public interface CategorieFournisseurRepository extends JpaRepository<CategorieFournisseur, Long>{
 	
-	@Query("Select p from CategorieFournisseur p Where p.code like %?1%"
-			+"or p.name like %?1%"
-			+"or p.id like %?1%"
-			+"or p.price like %?1%")
+	@Query("Select p from CategorieFournisseur p Where p.description like %?1%"
+			+"or p.id like %?1%")
 	public Page<CategorieFournisseur> findAll(Pageable pageable, String keyword);
 }
 	

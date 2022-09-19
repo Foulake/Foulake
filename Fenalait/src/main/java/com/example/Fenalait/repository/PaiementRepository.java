@@ -17,11 +17,12 @@ public interface PaiementRepository extends JpaRepository<Paiement, Long>{
 	
 	@Query("Select pt from Paiement pt Where pt.date like %?1%"
 			+"or pt.id like %?1%"
-			+"or pt.date like %?1%")
-	public List<Paiement> findAll(String keyword);
+			+"or pt.qte like %?1%"
+			+"or pt.montant like %?1%")
+	public Page<Paiement> findAll(Pageable pageable, String keywords);
 
 	public List<Paiement> findByFournisseurId(Long fournisseurId);
 
-	public Page<Paiement> findAll(Pageable pageable, String keywords);
+	
 
 }

@@ -25,8 +25,11 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
 	@Query("SELECT c FROM Client c WHERE "
 			+ "CONCAT(c.id, '', c.nomClient, '', c.telClient, '', c.prenomClient)" 
 			+ " LIKE %?1%")
-	public Page<Client> findAll(String keyword, Pageable pageable);
+	Page<Client> findAll(Pageable pageable, String keywords);
 
-	public Page<Client> findAll(Pageable pageable, String keywords);
+	
+	public Page<Client> findAll(Pageable pageable);
+
+	
 
 }

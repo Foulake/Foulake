@@ -17,8 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Fenalait.dto.CategoryFourDto;
-import com.example.Fenalait.dto.CategoryFourResponse;
-import com.example.Fenalait.dto.CategoryFourResponse;
+import com.example.Fenalait.dto.CategoryFourResponse; 
 import com.example.Fenalait.service.CategoryFourService;
 import com.example.Fenalait.utils.AppConstants;
 

@@ -14,8 +14,6 @@ public interface EmployeRepository extends JpaRepository<Employe, Long>{
 	@Query("SELECT em FROM Employe em WHERE "
 			+ "CONCAT(em.id, '', em.firstName, '', em.lastName, '', em.email, '', em.telEmploye)" 
 			+ " LIKE %?1%")
-	Page<Employe> findAll(String keyword, Pageable pageable);
-
 	Page<Employe> findAll(Pageable pageable, String keywords);
 
 }

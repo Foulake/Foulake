@@ -17,13 +17,13 @@ public interface ProduitRepository extends JpaRepository<Produit, Long>{
 	@Query("Select p from Produit p Where p.date like %?1%"
 			+"or p.nomPrdt like %?1%"
 			+"or p.dateExp like %?1%")
-	public List<Produit> findAll(String keyword);
+	public Page<Produit> findAll(Pageable pageable, String keywords);
 
 	public List<Produit> findByCategoryId(Long categoryId);
 
 	public List<Produit> findByMagasinId(Long magasinId);
 
-	public Page<Produit> findAll(Pageable pageable, String keywords);
+	
 
 	
 }

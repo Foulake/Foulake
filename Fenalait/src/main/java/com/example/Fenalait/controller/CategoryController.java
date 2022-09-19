@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.Fenalait.dto.CategoryDto;
 import com.example.Fenalait.dto.CategoryResponse;
-import com.example.Fenalait.dto.CategoryResponse;
 import com.example.Fenalait.service.CategoryService;
 import com.example.Fenalait.utils.AppConstants;
 
