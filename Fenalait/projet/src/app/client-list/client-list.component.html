@@ -1,0 +1,33 @@
+ 
+<h2>Liste des Clients</h2>
+
+
+ 
+<table class="table =table-striped">
+  <thead>
+      <tr>
+          <th >Id</th>
+          <th>NomClient</th>
+          <th>PrenomClient</th>
+          <th>TelClient</th>
+          <th>Date</th>
+          <th>Actions</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr *ngFor="let client of clients">
+          <td>{{ client.id }}</td>
+          <td>{{client.nomClient }}</td>
+         <td>{{ client.prenomClient }}</td>
+          <td>{{ client.telClient }}</td>
+           <td>  
+               <button  (click)="updateClient(client.id)" class="btn btn-sm btn-success rounded-pill">Modifier</button>
+               <button (click)="deleteClient(client.id)" class="btn btn-sm btn-danger rounded-pill" style="margin-left:10px;" >Supprimer</button>
+                </td>          
+      </tr>  
+  </tbody>
+  
+    
+</table>
+    
+
