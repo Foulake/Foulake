@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.example.Fenalait.dto.FournisseurDto;
 import com.example.Fenalait.exception.BlogAPIException;
 import com.example.Fenalait.exception.ResourceNotFoundException;
+import com.example.Fenalait.exception.ResourceNotFoundExceptions;
 import com.example.Fenalait.model.CategorieFournisseur;
 import com.example.Fenalait.model.Fournisseur;
 import com.example.Fenalait.repository.CategorieFournisseurRepository;
@@ -133,6 +134,14 @@ private FournisseurRepository fournisseurRepository;
         fournisseur.setTel(fournisseurDto.getTel());
         return  fournisseur;
     }
+
+	@Override
+	public Fournisseur getFournisseur(Long fournisseurId) {
+		Fournisseur fournisseur = fournisseurRepository.findById(fournisseurId)
+				.orElseThrow(() -> new ResourceNotFoundExceptions("Il n'existe pas de approvissionnement avec id : " + fournisseurId));
+		
+		return fournisseur;
+	}
 	
 
 }

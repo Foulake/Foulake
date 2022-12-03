@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.Fenalait.dto.FournisseurDto;
+import com.example.Fenalait.model.Fournisseur;
 
 @Service
 public interface FournisseurService {
@@ -18,4 +19,6 @@ public interface FournisseurService {
 	 FournisseurDto updateFournisseur(Long categoryFourId, Long fournisseurId, FournisseurDto fournisseurDto);
 
 	 void deleteFournisseur(Long categoryFourId, Long fournisseurId);
+
+	Fournisseur getFournisseur(Long fournisseurId);
 }

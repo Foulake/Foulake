@@ -35,6 +35,12 @@ public class CategoryServiceImpl implements CategoryService{
         CategoryDto categoryResponse = mapToDTO(newCategory);
         return categoryResponse;
 	}
+	
+	@Override
+	public Category getCategory(Long categoryId) {
+		return categoryRepository.findById(categoryId).orElseThrow(
+		() ->  new ResourceNotFoundException("Il n'existe pas une categorie avec id : " + categoryId, null, categoryId));	
+	}
 
 	@Override
 	public CategoryResponse getAllCategories(int pageNo, int pageSize, String sortBy, String sortDir) {

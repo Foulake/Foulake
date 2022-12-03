@@ -60,8 +60,13 @@ public class User extends BaseEntity implements UserDetails{
 	private String password;
 	
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Approvissionnement> approvissionnements ;
+	
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Produit> produits ;
-	 
+	
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Vente> ventes ;
     @ManyToMany
     @JoinTable(
 
@@ -183,5 +188,12 @@ public class User extends BaseEntity implements UserDetails{
 		produits.remove(produit);
 	}
 
+	public void addApprovissionnement(Approvissionnement approvissionnement) {
+		approvissionnements.add(approvissionnement);
+	}
+	
+	public void removeApprovissionnement(Approvissionnement approvissionnement) {
+		approvissionnements.remove(approvissionnement);
+	}
 	
 }

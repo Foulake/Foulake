@@ -14,7 +14,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -35,8 +36,12 @@ public class Produit extends  BaseEntity{
 	private String nomPrdt;
 	
 	@Column(name="qte")
-	private double qte;
+	private Double qte;
 	
+	 private String code;
+	  
+	 private float price;
+	  
 	@Column(name="date")
 	@Temporal(TemporalType.DATE)
 	private Date date;
@@ -57,13 +62,16 @@ public class Produit extends  BaseEntity{
 //	@Transient
 	@OneToMany(mappedBy ="produit")
 	private List<Vente> ventes;
+	
+	@OneToMany(mappedBy ="produit")
+	private List<Approvissionnement> approvissionnements;
 
 	public Produit() {
 		super();
 		
 	}
 	
-	public Produit(Long id, String nomPrdt, double qte, Date date,
+	public Produit(Long id, String nomPrdt, Double qte, Date date,
 			java.sql.Date dateExp) {
 		super();
 		this.id = id;
@@ -71,5 +79,13 @@ public class Produit extends  BaseEntity{
 		this.qte = qte;
 		this.date = date;
 		this.dateExp = dateExp;
+	}
+
+	public void addApprovissionnement(Approvissionnement approvissionnement) {
+		approvissionnements.add(approvissionnement);
+	}
+	
+	public void removeApprovissionnement(Approvissionnement approvissionnement) {
+		approvissionnements.remove(approvissionnement);
 	}
 }

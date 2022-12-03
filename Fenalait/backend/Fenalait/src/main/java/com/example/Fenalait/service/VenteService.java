@@ -5,29 +5,19 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.Fenalait.dto.VenteDto;
+import com.example.Fenalait.dto.VenteResponse;
+import com.example.Fenalait.model.Vente;
 
 @Service
 public interface VenteService {
 
-	VenteDto createVente(Long clientId, VenteDto venteDto);
-
-	 List<VenteDto> getVentesByClientId(Long clientId);
-
-	 VenteDto getVenteById(Long clientId, Long venteId);
-
-	 VenteDto updateVente(Long clientId, Long venteId, VenteDto venteDto);
-
-	 void deleteVente(Long clientId, Long venteId);
-	 
-	 
-	 VenteDto createProduitVente(Long produitId, VenteDto venteDto);
-
-	 List<VenteDto> getVentesByProduitId(Long produitId);
-
-	 VenteDto getProduitVenteById(Long produitId, Long venteId);
-
-	 VenteDto updateProduitVente(Long produitId, Long venteId, VenteDto venteDto);
-
-	 void deleteProduitVente(Long produitId, Long venteId);
+	public VenteResponse addVente(VenteDto venteDto );
+	public VenteResponse getVenteById(Long productId);
+	public Vente getVente(Long productId);
+	public List<VenteResponse> getVentes();
+	public VenteResponse getAllVentes(int pageNo, int pageSize, String sortBy, String sortDir);
+	public VenteResponse deleteVente(Long productId);
+	public VenteResponse editVente(Long productId, VenteDto venteDto);
+	public VenteResponse searchVenteFull(int pageNo, int pageSize, String sortBy, String sortDir, String keyword);
 	 
 }

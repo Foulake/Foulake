@@ -11,6 +11,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CategoryResponse {
 
+	private Long id ;
+	private String nom;
+	
 	private List<CategoryDto> content;
     private int pageNo;
     private int pageSize;

@@ -11,6 +11,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MagasinResponse {
 
+	private Long id;
+	private String nomMagasin;
+	
 	private List<MagasinRequestDto> content;
     private int pageNo;
     private int pageSize;

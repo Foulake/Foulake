@@ -30,6 +30,8 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
 	
 	public Page<Client> findAll(Pageable pageable);
 
+	boolean existsClientByTelClient(String telClient);
+
 	
 
 }

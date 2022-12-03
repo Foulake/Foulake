@@ -24,6 +24,10 @@ public interface VenteRepository extends JpaRepository<Vente, Long>{
 	List<Vente> findByClientId(Long clientId);
 
 	List<Vente> findByProduitId(Long produitId);
+	@Query( "SELECT v FROM Vente v WHERE "
+			+ "CONCAT(v.id, '', v.quantite, '', v.montant, '', v.remise, '', v.date)"
+			+ " LIKE %?1%")
+	Page<Vente> findAll(Pageable pageable, String keyword);
 
 
 

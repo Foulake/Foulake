@@ -18,7 +18,7 @@ import lombok.Data;
 @Data
 public class FournisseurDto {
 
-	private long id;
+	private Long id;
 	
 	@NotBlank(message = "Veuillez entrer le nom du Fournisseur !!")
 	@Size(min = 2, max = 125,  message = "La taille doit être comprise entre 2-125 ")
@@ -28,8 +28,7 @@ public class FournisseurDto {
 	@Size(min = 2, max = 125,  message = "La taille doit être comprise entre 2-125 ")
 	private String prenom;
 	
-	@Column(name="dateFour")
-	@Past(message = "La date de naissance ne peut être inférieur à la date courante !!")
+	@Past(message = "La date ne peut être inférieur à la date courante !!")
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
 	private Date date;
 	

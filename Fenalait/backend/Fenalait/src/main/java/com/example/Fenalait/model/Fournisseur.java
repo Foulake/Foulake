@@ -58,5 +58,16 @@ public class Fournisseur extends  BaseEntity {
 	@OneToMany(mappedBy = "fournisseur")
 	private List<Paiement> paiements;
 	
+	@OneToMany(mappedBy = "fournisseur")
+	private List<Approvissionnement> approvissionnements;
+
+	public void addApprovissionnement(Approvissionnement approvissionnement) {
+		approvissionnements.add(approvissionnement);
+	}
+	
+	public void removeApprovissionnement(Approvissionnement approvissionnement) {
+		approvissionnements.remove(approvissionnement);
+	}
+	
 
 }

@@ -73,7 +73,7 @@ private EmployeRepository employeRepository;
 		// get employe by id from the database
         Employe employe = employeRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Employe", "id", id));
 
-        employe.setEmail(employeDto.getEmail());
+        employe.setTitre(employeDto.getTitre());
         employe.setFirstName(employeDto.getFirstName());
         employe.setLastName(employeDto.getLastName());
         employe.setTelEmploye(employeDto.getTelEmploye());
@@ -95,7 +95,7 @@ private EmployeRepository employeRepository;
        // EmployeDto employeDto = mapper.map(employe, EmployeDto.class);
         EmployeDto employeDto = new EmployeDto();
         employeDto.setId(employe.getId());
-        employeDto.setEmail(employe.getEmail());
+        employeDto.setTitre(employe.getTitre());
         employeDto.setFirstName(employe.getFirstName());
         employeDto.setLastName(employe.getLastName());
         employeDto.setTelEmploye(employe.getTelEmploye());
@@ -109,7 +109,7 @@ private EmployeRepository employeRepository;
         employe.setFirstName(employeDto.getFirstName());
         employe.setLastName(employeDto.getLastName());
         employe.setTelEmploye(employeDto.getTelEmploye());
-        employe.setEmail(employeDto.getEmail());
+        employe.setTitre(employeDto.getTitre());
         return employe;
     }
 

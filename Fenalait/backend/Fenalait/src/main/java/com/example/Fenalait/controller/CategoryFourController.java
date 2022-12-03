@@ -56,7 +56,7 @@ public class CategoryFourController {
         return ResponseEntity.ok(categoryFourService.getCategoryFourById(id));
     }
 
-    @PostAuthorize("hasRole('ADMIN')")
+    //@PostAuthorize("hasRole('ADMIN')")
     // update categoryFour by id rest api
     @PutMapping("/edit/{id}")
     public ResponseEntity<CategoryFourDto> updateCategoryFour(@Valid @RequestBody CategoryFourDto categoryFourDto, @PathVariable(name = "id") Long id){

@@ -5,11 +5,12 @@ import java.util.List;
 import javax.validation.constraints.NotBlank;
 
 import com.example.Fenalait.model.Approvissionnement;
+import com.example.Fenalait.model.Employe;
 
 import lombok.Data;
 
 @Data
-public class PaiementDto {
+public class PaiementEmployeDto {
 
 	private Long id;
 	
@@ -18,11 +19,8 @@ public class PaiementDto {
 	
 	private boolean payee;
 	
-	@NotBlank(message = "Veuillez entrer la quantité à payer !!")
-	private double qte;
-	
 	@NotBlank(message = "Veuillez entrer le montant à payer !!")
 	private double montant;
 	
-	private List<Approvissionnement> approvissionnements;
+	//private List<Employe> employes;
 }

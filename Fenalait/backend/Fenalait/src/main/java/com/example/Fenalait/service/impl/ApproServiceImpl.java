@@ -1,302 +1,192 @@
 package com.example.Fenalait.service.impl;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
-import org.springframework.http.HttpStatus;
+import javax.transaction.Transactional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.example.Fenalait.dto.ApproDto;
-import com.example.Fenalait.exception.BlogAPIException;
-import com.example.Fenalait.exception.ResourceNotFoundException;
+import com.example.Fenalait.dto.ApproResponse;
+import com.example.Fenalait.dto.Mapper;
+import com.example.Fenalait.exception.ResourceNotFoundExceptions;
 import com.example.Fenalait.model.Fournisseur;
-import com.example.Fenalait.model.Paiement;
 import com.example.Fenalait.model.Produit;
+import com.example.Fenalait.model.User;
 import com.example.Fenalait.model.Approvissionnement;
 import com.example.Fenalait.repository.FournisseurRepository;
-import com.example.Fenalait.repository.PaiementRepository;
 import com.example.Fenalait.repository.ProduitRepository;
 import com.example.Fenalait.repository.ApproRepository;
 import com.example.Fenalait.service.ApproService;
+import com.example.Fenalait.service.FournisseurService;
+import com.example.Fenalait.service.ProduitService;
+import com.example.Fenalait.service.UserService;
 
 @Service
 public class ApproServiceImpl implements ApproService{
 
-
-	private ApproRepository approRepository;
 	
-	private FournisseurRepository fournisseurRepository;
+	private ApproRepository approvissionnementRepository;	
+	private final FournisseurService fournisseurService;
+	private final UserService userService;
+	private final ProduitService produitService;
+	private final ProduitRepository produitRepository;
+	private final FournisseurRepository fournisseurRepository;
 	
-	private  ProduitRepository produitRepository;
-	
-	private PaiementRepository paiementRepository;
-
-	public ApproServiceImpl(ApproRepository approRepository, FournisseurRepository fournisseurRepository, ProduitRepository produitRepository,
-							PaiementRepository paiementRepository) {
-		super();
-		this.approRepository = approRepository;
-		this.fournisseurRepository = fournisseurRepository;
+	@Autowired
+	public ApproServiceImpl(ApproRepository approvissionnementRepository, FournisseurService fournisseurService, UserService userService,
+			ProduitService produitService, ProduitRepository produitRepository, FournisseurRepository fournisseurRepository) {
+		
+		this.approvissionnementRepository = approvissionnementRepository;
+		this.fournisseurService = fournisseurService;
+		this.userService = userService;
+		this.produitService = produitService;
 		this.produitRepository = produitRepository;
-		this.paiementRepository = paiementRepository;
+		this.fournisseurRepository = fournisseurRepository;
+	}
+
+	@Transactional     
+	@Override
+	public ApproResponse addApprovissionnement(ApproDto approDto) {
+		Approvissionnement approvissionnement = new Approvissionnement();
+		
+		
+		approvissionnement.setDateAppro(approDto.getDateAppro());
+		approvissionnement.setQteAppro( approDto.getQteAppro());
+	
+		if(approDto.getFournisseurId() == null ) {
+			throw new IllegalArgumentException("Le approvissionnement manque de Categorie !");
+		}
+		if(approDto.getProduitId() == null) {
+			throw new IllegalArgumentException("Le approvissionnement manque de Produit !");
+		}
+		if(approDto.getUserId() == null) {
+			throw new IllegalArgumentException("Le approvissionnement manque du nom de l'utilisateur !");
+		}
+		
+		Fournisseur fournisseur = fournisseurService.getFournisseur(approDto.getFournisseurId());
+		approvissionnement.setFournisseur(fournisseur);
+		
+		Produit produit = produitService.getProduit(approDto.getProduitId());
+		approvissionnement.setProduit(produit);
+		
+		User user = userService.getUser(approDto.getUserId());;
+		approvissionnement.setUser(user);
+		
+		approvissionnement.setQteAppro(approvissionnement.getQteAppro());
+		approvissionnement.setDateAppro(approvissionnement.getDateAppro());
+		
+		Approvissionnement approvissionnement1 = approvissionnementRepository.save(approvissionnement);
+		
+		approvissionnement.getProduit().setQte(approvissionnement.getProduit().getQte() + approDto.getQteAppro());
+		
+		
+		return Mapper.approvissionnementToApproResponse(approvissionnement1);
 	}
 
 	@Override
-	public ApproDto createAppro(Long fournisseurId, ApproDto approDto) {
-		Approvissionnement appro = mapToEntity(approDto);
-
-        // retrieve fournisseur entity by id
-        Fournisseur fournisseur = fournisseurRepository.findById(fournisseurId).orElseThrow(
-                () -> new ResourceNotFoundException("Fournisseur", "id", fournisseurId));
-
-        // set fournisseur to appro entity
-        appro.setFournisseur(fournisseur);
-
-        // appro entity to DB
-        Approvissionnement newAppro =  approRepository.save(appro);
-
-        return mapToDTO(newAppro);
+	public ApproResponse getApprovissionnementById(Long approId) {
+		Approvissionnement approvissionnement = getApprovissionnement(approId);
+		return Mapper.approvissionnementToApproResponse(approvissionnement);
 	}
 
 	@Override
-	public List<ApproDto> getApprosByFournisseurId(Long fournisseurId) {
-		// retrieve appros by fournisseurId
-        List<Approvissionnement> appros = approRepository.findByFournisseurId(fournisseurId);
+	public Approvissionnement getApprovissionnement(Long approId) {
+		Approvissionnement approvissionnement = approvissionnementRepository.findById(approId)
+				.orElseThrow(() -> new ResourceNotFoundExceptions("Il n'existe pas d'approvissionnement avec id : " + approId));
+		return approvissionnement;
+	}
+	
+	
+	@Override
+	public ApproResponse deleteApprovissionnement(Long approId) {
+		Approvissionnement approvissionnement = getApprovissionnement(approId);
+		approvissionnementRepository.delete(approvissionnement);
+		
+		return Mapper.approvissionnementToApproResponse(approvissionnement);
+	}
 
-        // convert list of appro entities to list of appro dto's
-        return appros.stream().map(appro -> mapToDTO(appro)).collect(Collectors.toList());
+	@Transactional
+	@Override
+	public ApproResponse editApprovissionnement(Long approId, ApproDto approDto) {
+		Approvissionnement approvissionnementEdit = getApprovissionnement(approId);
+		
+		approvissionnementEdit.setDateAppro(approDto.getDateAppro());
+		approvissionnementEdit.setQteAppro(approDto.getQteAppro());
+		
+		if(approDto.getFournisseurId() != null ) {
+			Fournisseur fournisseur = fournisseurService.getFournisseur(approDto.getFournisseurId());
+			approvissionnementEdit.setFournisseur(fournisseur);
+			
+		}
+		if(approDto.getProduitId() != null ) {
+			Produit produit = produitService.getProduit(approDto.getProduitId());
+			approvissionnementEdit.setProduit(produit);
+		}
+		
+		if(approDto.getUserId() != null ) {
+			User user = userService.getUser(approDto.getUserId());
+			approvissionnementEdit.setUser(user);
+		}
+		
+		return Mapper.approvissionnementToApproResponse(approvissionnementEdit);
 	}
 
 	@Override
-	public ApproDto getApproById(Long fournisseurId, Long approId) {
-		// retrieve fournisseur entity by id
-        Fournisseur fournisseur = fournisseurRepository.findById(fournisseurId).orElseThrow(
-                () -> new ResourceNotFoundException("Fournisseur", "id", fournisseurId));
-
-        // retrieve appro by id
-        Approvissionnement appro = approRepository.findById(approId).orElseThrow(() ->
-                new ResourceNotFoundException("Appro", "id", approId));
-
-        if(!appro.getFournisseur().getId().equals(fournisseur.getId())){
-            throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Appro does not belong to fournisseur");
-        }
-
-        return mapToDTO(appro);
+	public List<ApproResponse> getApprovissionnements() {
+		List<Approvissionnement> approvissionnements = StreamSupport
+				.stream(approvissionnementRepository.findAll().spliterator(), false)
+				.collect(Collectors.toList());
+		
+		return Mapper.approvissionnementToApproResponses(approvissionnements);
 	}
 
+
 	@Override
-	public ApproDto updateAppro(Long fournisseurId, Long approId, ApproDto approDto) {
-		// retrieve fournisseur entity by id
-        Fournisseur fournisseur = fournisseurRepository.findById(fournisseurId).orElseThrow(
-                () -> new ResourceNotFoundException("Fournisseur", "id", fournisseurId));
+	public ApproResponse getAllApprovissionnements(int pageNo, int pageSize, String sortBy, String sortDir) {
+		
+		Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
 
-        // retrieve appro by id
-        Approvissionnement appro = approRepository.findById(approId).orElseThrow(() ->
-                new ResourceNotFoundException("Appro", "id", approId));
-
-        if(!appro.getFournisseur().getId().equals(fournisseur.getId())){
-            throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Appro does not belongs to fournisseur");
-        }
-
-        appro.setDateAppro(approDto.getDateAppro());
-        appro.setQteAppro(approDto.getQteAppro());
+        // create Pageable instance
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
         
-        Approvissionnement updatedAppro = approRepository.save(appro);
-        return mapToDTO(updatedAppro);
-	}
-
-	@Override
-	public void deleteAppro(Long fournisseurId, Long approId) {
-		// retrieve fournisseur entity by id
-        Fournisseur fournisseur = fournisseurRepository.findById(fournisseurId).orElseThrow(
-                () -> new ResourceNotFoundException("Fournisseur", "id", fournisseurId));
-
-        // retrieve appro by id
-        Approvissionnement appro = approRepository.findById(approId).orElseThrow(() ->
-                new ResourceNotFoundException("Appro", "id", approId));
-
-        if(!appro.getFournisseur().getId().equals(fournisseur.getId())){
-            throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Appro does not belongs to fournisseur");
-        }
-
-        approRepository.delete(appro);
-	}
-
-	
-	/** Pour Produit **/
-	
-	@Override
-	public ApproDto createProduitAppro(Long produitId, ApproDto approDto) {
-		Approvissionnement appro = mapToEntity(approDto);
-
-        // retrieve produit entity by id
-        Produit produit = produitRepository.findById(produitId).orElseThrow(
-                () -> new ResourceNotFoundException("Produit", "id", produitId));
-
-        // set produit to appro entity
-        appro.setProduit(produit);
-
-        // appro entity to DB
-        Approvissionnement newAppro =  approRepository.save(appro);
-
-        return mapToDTO(newAppro);
-	}
-
-	@Override
-	public List<ApproDto> getApprosByProduitId(Long produitId) {
-		// retrieve appros by produitId
-        List<Approvissionnement> appros = approRepository.findByProduitId(produitId);
-
-        // convert list of appro entities to list of appro dto's
-        return appros.stream().map(appro -> mapToDTO(appro)).collect(Collectors.toList());
-	}
-
-	@Override
-	public ApproDto getProduitApproById(Long produitId, Long approId) {
-		// retrieve produit entity by id
-        Produit produit = produitRepository.findById(produitId).orElseThrow(
-                () -> new ResourceNotFoundException("Produit", "id", produitId));
-
-        // retrieve appro by id
-        Approvissionnement appro = approRepository.findById(approId).orElseThrow(() ->
-                new ResourceNotFoundException("Appro", "id", approId));
-
-        if(!appro.getProduit().getId().equals(produit.getId())){
-            throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Appro does not belong to produit");
-        }
-
-        return mapToDTO(appro);
-	}
-
-	@Override
-	public ApproDto updateProduitAppro(Long produitId, Long approId, ApproDto approDto) {
-		// retrieve produit entity by id
-        Produit produit = produitRepository.findById(produitId).orElseThrow(
-                () -> new ResourceNotFoundException("Produit", "id", produitId));
-
-        // retrieve appro by id
-        Approvissionnement appro = approRepository.findById(approId).orElseThrow(() ->
-                new ResourceNotFoundException("Approvissionnement", "id", approId));
-
-        if(!appro.getProduit().getId().equals(produit.getId())){
-            throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Appro does not belongs to produit");
-        }
-
-        appro.setDateAppro(approDto.getDateAppro());
-        appro.setQteAppro(approDto.getQteAppro());
+        Page<Approvissionnement> approvissionnements = approvissionnementRepository.findAll(pageable);
         
-        Approvissionnement updatedAppro = approRepository.save(appro);
-        return mapToDTO(updatedAppro);
-	}
-
-	@Override
-	public void deleteProduitAppro(Long produitId, Long approId) {
-		// retrieve produit entity by id
-        Produit produit = produitRepository.findById(produitId).orElseThrow(
-                () -> new ResourceNotFoundException("Produit", "id", produitId));
-
-        // retrieve appro by id
-        Approvissionnement appro = approRepository.findById(approId).orElseThrow(() ->
-                new ResourceNotFoundException("Appro", "id", approId));
-
-        if(!appro.getProduit().getId().equals(produit.getId())){
-            throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Appro does not belongs to produit");
-        }
-
-        approRepository.delete(appro);
-	}
-	
-	
-/** Pour Paiement **/
-	
-	@Override
-	public ApproDto createPaiementAppro(Long paiementId, ApproDto approDto) {
-		Approvissionnement appro = mapToEntity(approDto);
-
-        // retrieve paiement entity by id
-        Paiement paiement = paiementRepository.findById(paiementId).orElseThrow(
-                () -> new ResourceNotFoundException("Paiement", "id", paiementId));
-
-        // set paiement to appro entity
-        appro.setPaiement(paiement);
-
-        // appro entity to DB
-        Approvissionnement newAppro =  approRepository.save(appro);
-
-        return mapToDTO(newAppro);
-	}
-
-	@Override
-	public List<ApproDto> getApprosByPaiementId(Long paiementId) {
-		// retrieve appros by paiementId
-        List<Approvissionnement> appros = approRepository.findByPaiementId(paiementId);
-
-        // convert list of appro entities to list of appro dto's
-        return appros.stream().map(appro -> mapToDTO(appro)).collect(Collectors.toList());
-	}
-
-	@Override
-	public ApproDto getPaiementApproById(Long paiementId, Long approId) {
-		// retrieve paiement entity by id
-        Paiement paiement = paiementRepository.findById(paiementId).orElseThrow(
-                () -> new ResourceNotFoundException("Paiement", "id", paiementId));
-
-        // retrieve appro by id
-        Approvissionnement appro = approRepository.findById(approId).orElseThrow(() ->
-                new ResourceNotFoundException("Appro", "id", approId));
-
-        if(!appro.getPaiement().getId().equals(paiement.getId())){
-            throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Appro does not belong to paiement");
-        }
-
-        return mapToDTO(appro);
-	}
-
-	@Override
-	public ApproDto updatePaiementAppro(Long paiementId, Long approId, ApproDto approDto) {
-		// retrieve paiement entity by id
-        Paiement paiement = paiementRepository.findById(paiementId).orElseThrow(
-                () -> new ResourceNotFoundException("Paiement", "id", paiementId));
-
-        // retrieve appro by id
-        Approvissionnement appro = approRepository.findById(approId).orElseThrow(() ->
-                new ResourceNotFoundException("Approvissionnement", "id", approId));
-
-        if(!appro.getPaiement().getId().equals(paiement.getId())){
-            throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Appro does not belongs to paiement");
-        }
-
-        appro.setDateAppro(approDto.getDateAppro());
-        appro.setQteAppro(approDto.getQteAppro());
+        List<Approvissionnement> listOfApprovissionnements = approvissionnements.getContent();
         
-        Approvissionnement updatedAppro = approRepository.save(appro);
-        return mapToDTO(updatedAppro);
+        List<ApproDto> content = listOfApprovissionnements.stream().map(approvissionnement -> mapToDTO(approvissionnement)).collect(Collectors.toList());
+		
+        ApproResponse approResponse = new ApproResponse();
+        approResponse.setContent(content);
+        approResponse.setPageNo(approvissionnements.getNumber());
+        approResponse.setPageSize(approvissionnements.getSize());
+        approResponse.setTotalElements(approvissionnements.getTotalElements());
+        approResponse.setTotalPages(approvissionnements.getTotalPages());
+        approResponse.setLast(approvissionnements.isLast());
+
+        return approResponse;
 	}
 
-	@Override
-	public void deletePaiementAppro(Long paiementId, Long approId) {
-		// retrieve paiement entity by id
-        Paiement paiement = paiementRepository.findById(paiementId).orElseThrow(
-                () -> new ResourceNotFoundException("Paiement", "id", paiementId));
-
-        // retrieve appro by id
-        Approvissionnement appro = approRepository.findById(approId).orElseThrow(() ->
-                new ResourceNotFoundException("Appro", "id", approId));
-
-        if(!appro.getPaiement().getId().equals(paiement.getId())){
-            throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Appro does not belongs to paiement");
-        }
-
-        approRepository.delete(appro);
-	}
-	
 	
 	private ApproDto mapToDTO(Approvissionnement appro){
-     //   ApproDto approDto = mapper.map(appro, ApproDto.class);
-
-        ApproDto approDto = new ApproDto();
+  
+		ApproDto approDto = new ApproDto();
         approDto.setId(appro.getId());
         approDto.setDateAppro(appro.getDateAppro());
         approDto.setQteAppro(appro.getQteAppro());
+        
+        approDto.setFournisseurNom(appro.getFournisseur().getPrenom());
+        approDto.setUserNom(appro.getUser().getPrenom());
+        approDto.setProduitNom(appro.getProduit().getNomPrdt());
         return  approDto;
     }
 
@@ -308,5 +198,37 @@ public class ApproServiceImpl implements ApproService{
         appro.setQteAppro(approDto.getQteAppro());
         return  appro;
     }
+
+	@Override
+	public ApproResponse searchApprovissionnementFull(int pageNo, int pageSize, String sortBy, String sortDir,
+			String keyword) {
+		Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        // create Pageable instance
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        
+        Page<Approvissionnement> approvissionnements = approvissionnementRepository.findAll(pageable, keyword);
+        
+        List<Approvissionnement> listOfApprovissionnements = approvissionnements.getContent();
+        
+        List<ApproDto> content = listOfApprovissionnements.stream().map(approvissionnement -> mapToDTO(approvissionnement)).collect(Collectors.toList());
+		
+        ApproResponse approResponse = new ApproResponse();
+        approResponse.setContent(content);
+        approResponse.setPageNo(approvissionnements.getNumber());
+        approResponse.setPageSize(approvissionnements.getSize());
+        approResponse.setTotalElements(approvissionnements.getTotalElements());
+        approResponse.setTotalPages(approvissionnements.getTotalPages());
+        approResponse.setLast(approvissionnements.isLast());
+
+        return approResponse;
+	}
+
+	@Override
+	public List<Approvissionnement> approvissionnementJourInterval(LocalDate createdAt, LocalDate updatedAt) {
+		
+		return approvissionnementRepository.approvissionnementJourInterval(createdAt, updatedAt);
+	}
     
 }

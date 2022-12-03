@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.Fenalait.dto.MagasinRequestDto;
 import com.example.Fenalait.dto.MagasinResponse;
+import com.example.Fenalait.model.Magasin;
 
 @Service
 public interface MagasinService {
@@ -31,4 +32,6 @@ public interface MagasinService {
 	 MagasinRequestDto updateMagasin(Long localiteId, Long magasinId, MagasinRequestDto MagasinRequestDto);
 
 	 void deleteMagasin(Long localiteId, Long magasinId);
+
+	Magasin getMagasin(Long categoryId);
 }

@@ -89,7 +89,9 @@ public class AuthController {
     	
     	PasswordEncoder encoder = new BCryptPasswordEncoder();
 		user.setPassword(encoder.encode(user.getPassword()));
+		//user.setConfirmPassword(encoder.encode(user.getConfirmPassword()));
     	user.setEmail(user.getEmail());
+    	//user.setConfirmEmail(user.getConfirmEmail());
     	user.setRoles(user.getRoles());
     	user.setNom(user.getNom());
     	user.setPrenom(user.getPrenom());

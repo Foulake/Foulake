@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.Fenalait.dto.ClientDto;
 import com.example.Fenalait.dto.ClientResponse;
+import com.example.Fenalait.model.Client;
 
 @Service
 public interface ClientService {
@@ -13,6 +14,8 @@ public interface ClientService {
 
     ClientResponse getAllClients(int pageNo, int pageSize, String sortBy, String sortDir);
 
+    public Client getClient(Long clientId);
+    
     ClientDto getClientById(Long id);
 
     ClientDto updateClient(ClientDto clientDto, Long id);

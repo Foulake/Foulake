@@ -1,20 +1,37 @@
 package com.example.Fenalait.service.impl;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
+import javax.transaction.Transactional;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.example.Fenalait.dto.Mapper;
 import com.example.Fenalait.dto.VenteDto;
+import com.example.Fenalait.dto.VenteResponse;
 import com.example.Fenalait.exception.BlogAPIException;
+import com.example.Fenalait.exception.ResourceAlredyExistException;
 import com.example.Fenalait.exception.ResourceNotFoundException;
+import com.example.Fenalait.exception.ResourceNotFoundExceptions;
 import com.example.Fenalait.model.Client;
 import com.example.Fenalait.model.Produit;
+import com.example.Fenalait.model.User;
 import com.example.Fenalait.model.Vente;
 import com.example.Fenalait.repository.ClientRepository;
 import com.example.Fenalait.repository.ProduitRepository;
 import com.example.Fenalait.repository.VenteRepository;
+import com.example.Fenalait.service.ClientService;
+import com.example.Fenalait.service.ProduitService;
+import com.example.Fenalait.service.UserService;
 import com.example.Fenalait.service.VenteService;
 
 @Service
@@ -26,184 +43,174 @@ private VenteRepository venteRepository;
 	
 	private  ProduitRepository produitRepository;
 	
+	private ClientService clientService;
+	
+	private  ProduitService produitService;
+	private  UserService userService;
 
-	public VenteServiceImpl(VenteRepository venteRepository, ClientRepository clientRepository, ProduitRepository produitRepository) {
+	public VenteServiceImpl(VenteRepository venteRepository, ClientRepository clientRepository, ProduitRepository produitRepository,ProduitService produitService,ClientService clientService,UserService userService) {
 		super();
 		this.venteRepository = venteRepository;
 		this.clientRepository = clientRepository;
 		this.produitRepository = produitRepository;
+		this.clientService = clientService;
+		this.produitService = produitService;	
+		this.userService = userService;		
+		}
+
+	@Transactional     
+	@Override
+	public VenteResponse addVente(VenteDto venteDto) {
+		Vente vente = new Vente();
+	
+		vente.setMontant(venteDto.getMontant());
+		vente.setQuantite(venteDto.getQuantite());
+		vente.setDate(venteDto.getDate());
+		vente.setRemise(venteDto.isRemise());
+		
+		if(venteDto.getClientId() == null ) {
+			throw new IllegalArgumentException("Le vente manque de Categorie !");
+		}
+		if(venteDto.getProduitId() == null) {
+			throw new IllegalArgumentException("Le vente manque de Produit !");
+		}
+		
+		
+		Client client = clientService.getClient(venteDto.getClientId());
+		vente.setClient(client);
+		
+		Produit produit = produitService.getProduit(venteDto.getClientId());
+		vente.setProduit(produit);
+		
+		User user = userService.getUser(venteDto.getUserId());;
+		vente.setUser(user);
+		
+		vente.setMontant(vente.getMontant());
+		vente.setQuantite(vente.getQuantite());
+		vente.setMontant(venteDto.getQuantite()*vente.getProduit().getPrice());
+		//vente.setMontant(vente.getMontant());
+		vente.setRemise(vente.isRemise());
+		vente.setDate(new Date());
+		
+		Vente vente1 = venteRepository.save(vente);
+		return Mapper.venteToVenteResponse(vente1);
 	}
 
 	@Override
-	public VenteDto createVente(Long clientId, VenteDto venteDto) {
-		Vente vente = mapToEntity(venteDto);
-
-        // retrieve client entity by id
-        Client client = clientRepository.findById(clientId).orElseThrow(
-                () -> new ResourceNotFoundException("Client", "id", clientId));
-
-        // set client to vente entity
-        vente.setClient(client);
-
-        // vente entity to DB
-        Vente newVente =  venteRepository.save(vente);
-
-        return mapToDTO(newVente);
+	public VenteResponse getVenteById(Long venteId) {
+		Vente vente = getVente(venteId);
+		return Mapper.venteToVenteResponse(vente);
 	}
 
 	@Override
-	public List<VenteDto> getVentesByClientId(Long clientId) {
-		// retrieve ventes by clientId
-        List<Vente> ventes = venteRepository.findByClientId(clientId);
-
-        // convert list of vente entities to list of vente dto's
-        return ventes.stream().map(vente -> mapToDTO(vente)).collect(Collectors.toList());
+	public Vente getVente(Long venteId) {
+		Vente vente = venteRepository.findById(venteId)
+				.orElseThrow(() -> new ResourceNotFoundExceptions("Il n'existe pas de vente avec id : " + venteId));
+		return vente;
+	}
+	
+	
+	@Override
+	public VenteResponse deleteVente(Long venteId) {
+		Vente vente = getVente(venteId);
+		venteRepository.delete(vente);
+		return Mapper.venteToVenteResponse(vente);
 	}
 
+	@Transactional
 	@Override
-	public VenteDto getVenteById(Long clientId, Long venteId) {
-		// retrieve client entity by id
-        Client client = clientRepository.findById(clientId).orElseThrow(
-                () -> new ResourceNotFoundException("Client", "id", clientId));
-
-        // retrieve vente by id
-        Vente vente = venteRepository.findById(venteId).orElseThrow(() ->
-                new ResourceNotFoundException("Vente", "id", venteId));
-
-        if(!vente.getClient().getId().equals(client.getId())){
-            throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Vente does not belong to client");
-        }
-
-        return mapToDTO(vente);
+	public VenteResponse editVente(Long venteId, VenteDto venteDto) {
+		Vente venteEdit = getVente(venteId);
+		
+		venteEdit.setQuantite(venteDto.getQuantite());
+		venteEdit.setMontant(venteDto.getQuantite()*venteEdit.getProduit().getPrice());
+		venteEdit.setDate(new Date());
+		venteEdit.setRemise(venteDto.isRemise());
+		
+		if(venteDto.getClientId() != null ) {
+			Client client = clientService.getClient(venteDto.getClientId());
+			venteEdit.setClient(client);
+			
+		}
+		if(venteDto.getProduitId() != null ) {
+			Produit produit = produitService.getProduit(venteDto.getProduitId());
+			venteEdit.setProduit(produit);
+		}
+		
+		if(venteDto.getUserId() != null ) {
+			User user = userService.getUser(venteDto.getUserId());
+			venteEdit.setUser(user);
+		}
+		
+		return Mapper.venteToVenteResponse(venteEdit);
 	}
 
+
 	@Override
-	public VenteDto updateVente(Long clientId, Long venteId, VenteDto venteDto) {
-		// retrieve client entity by id
-        Client client = clientRepository.findById(clientId).orElseThrow(
-                () -> new ResourceNotFoundException("Client", "id", clientId));
+	public List<VenteResponse> getVentes() {
+		List<Vente> ventes = StreamSupport
+				.stream(venteRepository.findAll().spliterator(), false)
+				.collect(Collectors.toList());
+		
+		return Mapper.venteToVenteResponses(ventes);
+	}
 
-        // retrieve vente by id
-        Vente vente = venteRepository.findById(venteId).orElseThrow(() ->
-                new ResourceNotFoundException("Vente", "id", venteId));
+	
 
-        if(!vente.getClient().getId().equals(client.getId())){
-            throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Vente does not belongs to client");
-        }
+	@Override
+	public VenteResponse getAllVentes(int pageNo, int pageSize, String sortBy, String sortDir) {
+		
+		Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
 
-        vente.setDate(venteDto.getDate());
-        vente.setMontant(venteDto.getMontant());
-        vente.setQuantite(venteDto.getQuantite());
-        //vente.setRemise(venteDto.getRemise());
+        // create Pageable instance
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
         
-        Vente updatedVente = venteRepository.save(vente);
-        return mapToDTO(updatedVente);
-	}
-
-	@Override
-	public void deleteVente(Long clientId, Long venteId) {
-		// retrieve client entity by id
-        Client client = clientRepository.findById(clientId).orElseThrow(
-                () -> new ResourceNotFoundException("Client", "id", clientId));
-
-        // retrieve vente by id
-        Vente vente = venteRepository.findById(venteId).orElseThrow(() ->
-                new ResourceNotFoundException("Vente", "id", venteId));
-
-        if(!vente.getClient().getId().equals(client.getId())){
-            throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Vente does not belongs to client");
-        }
-
-        venteRepository.delete(vente);
-	}
-
-	
-	/** Pour Produit **/
-	
-	@Override
-	public VenteDto createProduitVente(Long produitId, VenteDto venteDto) {
-		Vente vente = mapToEntity(venteDto);
-
-        // retrieve produit entity by id
-        Produit produit = produitRepository.findById(produitId).orElseThrow(
-                () -> new ResourceNotFoundException("Produit", "id", produitId));
-
-        // set produit to vente entity
-        vente.setProduit(produit);
-
-        // vente entity to DB
-        Vente newVente =  venteRepository.save(vente);
-
-        return mapToDTO(newVente);
-	}
-
-	@Override
-	public List<VenteDto> getVentesByProduitId(Long produitId) {
-		// retrieve ventes by produitId
-        List<Vente> ventes = venteRepository.findByProduitId(produitId);
-
-        // convert list of vente entities to list of vente dto's
-        return ventes.stream().map(vente -> mapToDTO(vente)).collect(Collectors.toList());
-	}
-
-	@Override
-	public VenteDto getProduitVenteById(Long produitId, Long venteId) {
-		// retrieve produit entity by id
-        Produit produit = produitRepository.findById(produitId).orElseThrow(
-                () -> new ResourceNotFoundException("Produit", "id", produitId));
-
-        // retrieve vente by id
-        Vente vente = venteRepository.findById(venteId).orElseThrow(() ->
-                new ResourceNotFoundException("Vente", "id", venteId));
-
-        if(!vente.getProduit().getId().equals(produit.getId())){
-            throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Vente does not belong to produit");
-        }
-
-        return mapToDTO(vente);
-	}
-
-	@Override
-	public VenteDto updateProduitVente(Long produitId, Long venteId, VenteDto venteDto) {
-		// retrieve produit entity by id
-        Produit produit = produitRepository.findById(produitId).orElseThrow(
-                () -> new ResourceNotFoundException("Produit", "id", produitId));
-
-        // retrieve vente by id
-        Vente vente = venteRepository.findById(venteId).orElseThrow(() ->
-                new ResourceNotFoundException("Vente", "id", venteId));
-
-        if(!vente.getProduit().getId().equals(produit.getId())){
-            throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Vente does not belongs to produit");
-        }
-
-        vente.setDate(venteDto.getDate());
-        vente.setMontant(venteDto.getMontant());
-        vente.setQuantite(venteDto.getQuantite());
-        //vente.setRemise(venteDto.getRemise());
+        Page<Vente> ventes = venteRepository.findAll(pageable);
         
-        Vente updatedVente = venteRepository.save(vente);
-        return mapToDTO(updatedVente);
+        List<Vente> listOfVentes = ventes.getContent();
+        
+        List<VenteDto> content = listOfVentes.stream().map(vente -> mapToDTO(vente)).collect(Collectors.toList());
+		
+        VenteResponse venteResponse = new VenteResponse();
+        venteResponse.setContent(content);
+        venteResponse.setPageNo(ventes.getNumber());
+        venteResponse.setPageSize(ventes.getSize());
+        venteResponse.setTotalElements(ventes.getTotalElements());
+        venteResponse.setTotalPages(ventes.getTotalPages());
+        venteResponse.setLast(ventes.isLast());
+
+        return venteResponse;
 	}
+
+	
 
 	@Override
-	public void deleteProduitVente(Long produitId, Long venteId) {
-		// retrieve produit entity by id
-        Produit produit = produitRepository.findById(produitId).orElseThrow(
-                () -> new ResourceNotFoundException("Produit", "id", produitId));
+	public VenteResponse searchVenteFull(int pageNo, int pageSize, String sortBy, String sortDir, String keyword) {
+		//List<Vente> ventes = this.venteRepository.findByName(keyword);
+		
+		Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
 
-        // retrieve vente by id
-        Vente vente = venteRepository.findById(venteId).orElseThrow(() ->
-                new ResourceNotFoundException("Vente", "id", venteId));
+        // create Pageable instance
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        
+        Page<Vente> ventes = venteRepository.findAll(pageable, keyword);
+        
+        List<Vente> listOfVentes = ventes.getContent();
+        
+        List<VenteDto> content = listOfVentes.stream().map(vente -> mapToDTO(vente)).collect(Collectors.toList());
+		
+        VenteResponse venteResponse = new VenteResponse();
+        venteResponse.setContent(content);
+        venteResponse.setPageNo(ventes.getNumber());
+        venteResponse.setPageSize(ventes.getSize());
+        venteResponse.setTotalElements(ventes.getTotalElements());
+        venteResponse.setTotalPages(ventes.getTotalPages());
+        venteResponse.setLast(ventes.isLast());
 
-        if(!vente.getProduit().getId().equals(produit.getId())){
-            throw new BlogAPIException(HttpStatus.BAD_REQUEST, "Vente does not belongs to produit");
-        }
-
-        venteRepository.delete(vente);
+        return venteResponse;
 	}
-	
-	
 	
 	private VenteDto mapToDTO(Vente vente){
      //   VenteDto venteDto = mapper.map(vente, VenteDto.class);

@@ -17,71 +17,71 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.Fenalait.dto.ProduitResponse;
-import com.example.Fenalait.dto.ProduitDto;
-import com.example.Fenalait.service.ProduitService;
+import com.example.Fenalait.dto.VenteDto;
+import com.example.Fenalait.dto.VenteResponse;
+import com.example.Fenalait.service.VenteService;
 import com.example.Fenalait.utils.AppConstants;
 
 @RestController
-@RequestMapping("/api/v1/produits")
-public class ProduitController {
+@RequestMapping("/api/v1/ventes")
+public class VenteController {
 	
-	 private ProduitService produitService;
+	 private VenteService venteService;
 
-	    public ProduitController(ProduitService produitService) {
-	        this.produitService = produitService;
+	    public VenteController(VenteService venteService) {
+	        this.venteService = venteService;
 	    }
 
 	    @PostMapping("/add")
 		//@RolesAllowed({"ROLE_ADMIN"})
-		public ResponseEntity<ProduitResponse> addProduct(@Valid @RequestBody ProduitDto productDto){
-			ProduitResponse productResponseDto = produitService.addProduit(productDto);
-			return new ResponseEntity<ProduitResponse>(productResponseDto, HttpStatus.OK);
+		public ResponseEntity<VenteResponse> addVente(@Valid @RequestBody VenteDto venteDto){
+			VenteResponse venteResponseDto = venteService.addVente(venteDto);
+			return new ResponseEntity<VenteResponse>(venteResponseDto, HttpStatus.OK);
 		}
 	   
 	    @GetMapping("/get/{id}")
-		public ResponseEntity<ProduitResponse> getProduct(@PathVariable final Long productId){
-	    	ProduitResponse productDto = produitService.getProduitById(productId);
-			return new ResponseEntity<ProduitResponse>(productDto, HttpStatus.OK);
+		public ResponseEntity<VenteResponse> getVente(@PathVariable final Long venteId){
+	    	VenteResponse venteDto = venteService.getVenteById(venteId);
+			return new ResponseEntity<VenteResponse>(venteDto, HttpStatus.OK);
 		}
 	    
 	    @GetMapping("/getAll")
-	    public ProduitResponse getAllProducts(
+	    public VenteResponse getAllVentes(
 	            @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
 	            @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
 	            @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
 	            @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir
 	    ){
-	        return produitService.getAllProduits(pageNo, pageSize, sortBy, sortDir);
+	        return venteService.getAllVentes(pageNo, pageSize, sortBy, sortDir);
 	    }
 	    
 
-	    @PutMapping("/edit/{id}")
-		public ResponseEntity<ProduitResponse> editProduct(@Valid @RequestBody final ProduitDto productRequestDto, @PathVariable final Long id){
-	    	ProduitResponse productResponseDto = produitService.editProduit(id, productRequestDto);
-			return new ResponseEntity<>(productResponseDto, HttpStatus.OK);
+	    @PutMapping("edit/{id}")
+		public ResponseEntity<VenteResponse> editVente(@Valid @RequestBody final VenteDto venteRequestDto, @PathVariable final Long id){
+	    	VenteResponse venteResponseDto = venteService.editVente(id, venteRequestDto);
+			return new ResponseEntity<>(venteResponseDto, HttpStatus.OK);
 		}
 	    
 	    @DeleteMapping("/delete/{id}")
 		//@RolesAllowed({"ROLE_ADMIN"})
 		public ResponseEntity<Map<String, Boolean>> deletePrroduct(@PathVariable final Long id){
-			produitService.deleteProduit(id);
+			venteService.deleteVente(id);
 			Map<String, Boolean> response =new  HashMap<>();
-	    	response.put("Le produit a été supprimé avec succès", Boolean.TRUE);
+	    	response.put("Le vente a été supprimé avec succès", Boolean.TRUE);
 	    	return ResponseEntity.ok(response);
 		
 		}
 
 
 	    @GetMapping("/search/full/{keywords}")
-		public  ResponseEntity<ProduitResponse> searchProductByFull(
+		public  ResponseEntity<VenteResponse> searchVenteByFull(
 				 @RequestParam(value = "pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNo,
 		            @RequestParam(value = "pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
 		            @RequestParam(value = "sortBy", defaultValue = AppConstants.DEFAULT_SORT_BY, required = false) String sortBy,
 		            @RequestParam(value = "sortDir", defaultValue = AppConstants.DEFAULT_SORT_DIRECTION, required = false) String sortDir,
 				@PathVariable("keywords") String keywords){
-			ProduitResponse result= produitService.searchProduitFull(pageNo, pageSize, sortBy, sortDir, keywords);
+			VenteResponse result= venteService.searchVenteFull(pageNo, pageSize, sortBy, sortDir, keywords);
 					
-			return new ResponseEntity<ProduitResponse>(result, HttpStatus.OK);
+			return new ResponseEntity<VenteResponse>(result, HttpStatus.OK);
 	 }
 }

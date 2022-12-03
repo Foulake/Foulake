@@ -13,8 +13,6 @@ import com.example.Fenalait.model.Paiement;
 @Repository
 public interface PaiementRepository extends JpaRepository<Paiement, Long>{
 
-	
-	
 	@Query("Select pt from Paiement pt Where pt.date like %?1%"
 			+"or pt.id like %?1%"
 			+"or pt.qte like %?1%"

@@ -31,7 +31,7 @@ public class LocaliteController {
     }
 
     // create blog localite rest api
-   // @PostMapping("/add")
+    @PostMapping("/add")
     public ResponseEntity<LocaliteRequestDto> createLocalite(@Valid @RequestBody LocaliteRequestDto localiteRequestDto){
         return new ResponseEntity<>(localiteService.createLocalite(localiteRequestDto), HttpStatus.CREATED);
     }

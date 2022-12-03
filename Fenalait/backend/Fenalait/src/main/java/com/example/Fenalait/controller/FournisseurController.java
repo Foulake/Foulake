@@ -28,36 +28,36 @@ public class FournisseurController {
         this.fournisseurService = fournisseurService;
     }
 
-    @PostMapping("/category/{categoryId}/add")
-    public ResponseEntity<FournisseurDto> createFournisseur(@PathVariable(value = "categoryId") long categoryId,
+    @PostMapping("/category/{categoryFourId}/add")
+    public ResponseEntity<FournisseurDto> createFournisseur(@PathVariable(value = "categoryFourId") Long categoryFourId,
                                                     @Valid @RequestBody FournisseurDto fournisseurDto){
-        return new ResponseEntity<>(fournisseurService.createFournisseur(categoryId, fournisseurDto), HttpStatus.CREATED);
+        return new ResponseEntity<>(fournisseurService.createFournisseur(categoryFourId, fournisseurDto), HttpStatus.CREATED);
     }
 
-    @GetMapping("/category/{categoryId}/fournisseur")
-    public List<FournisseurDto> getFournisseursByCategoryId(@PathVariable(value = "categoryId") Long categoryId){
-        return fournisseurService.getFournisseursByCategoryFourId(categoryId);
+    @GetMapping("/category/{categoryFourId}/fournisseur")
+    public List<FournisseurDto> getFournisseursByCategoryId(@PathVariable(value = "categoryFourId") Long categoryFourId){
+        return fournisseurService.getFournisseursByCategoryFourId(categoryFourId);
     }
 
-    @GetMapping("/category/{categoryId}/fournisseur/{id}")
-    public ResponseEntity<FournisseurDto> getFournisseurById(@PathVariable(value = "categoryId") Long categoryId,
+    @GetMapping("/category/{categoryFourId}/fournisseur/{id}")
+    public ResponseEntity<FournisseurDto> getFournisseurById(@PathVariable(value = "categoryFourId") Long categoryFourId,
                                                      @PathVariable(value = "id") Long fournisseurId){
-        FournisseurDto fournisseurDto = fournisseurService.getFournisseurById(categoryId, fournisseurId);
+        FournisseurDto fournisseurDto = fournisseurService.getFournisseurById(categoryFourId, fournisseurId);
         return new ResponseEntity<>(fournisseurDto, HttpStatus.OK);
     }
 
-    @PutMapping("/category/{categoryId}/fournisseur/{id}")
-    public ResponseEntity<FournisseurDto> updateFournisseur(@PathVariable(value = "categoryId") Long categoryId,
+    @PutMapping("/category/{categoryFourId}/fournisseur/{id}")
+    public ResponseEntity<FournisseurDto> updateFournisseur(@PathVariable(value = "categoryFourId") Long categoryFourId,
                                                     @PathVariable(value = "id") Long fournisseurId,
                                                     @Valid @RequestBody FournisseurDto fournisseurDto){
-        FournisseurDto updatedFournisseur = fournisseurService.updateFournisseur(categoryId, fournisseurId, fournisseurDto);
+        FournisseurDto updatedFournisseur = fournisseurService.updateFournisseur(categoryFourId, fournisseurId, fournisseurDto);
         return new ResponseEntity<>(updatedFournisseur, HttpStatus.OK);
     }
 
-    @DeleteMapping("/category/{categoryId}/fournisseur/{id}")
-    public ResponseEntity<String> deleteFournisseur(@PathVariable(value = "categoryId") Long categoryId,
+    @DeleteMapping("/category/{categoryFourId}/fournisseur/{id}")
+    public ResponseEntity<String> deleteFournisseur(@PathVariable(value = "categoryFourId") Long categoryFourId,
                                                 @PathVariable(value = "id") Long fournisseurId){
-        fournisseurService.deleteFournisseur(categoryId, fournisseurId);
+        fournisseurService.deleteFournisseur(categoryFourId, fournisseurId);
         return new ResponseEntity<>("Fournisseur deleted successfully", HttpStatus.OK);
     }
 }

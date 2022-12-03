@@ -13,6 +13,7 @@ import com.example.Fenalait.model.Produit;
 @Repository
 public interface ProduitRepository extends JpaRepository<Produit, Long>{
 	
+	Page<Produit> findAll(Pageable pageable);
 	
 	@Query("Select p from Produit p Where p.date like %?1%"
 			+"or p.nomPrdt like %?1%"
@@ -23,7 +24,11 @@ public interface ProduitRepository extends JpaRepository<Produit, Long>{
 
 	public List<Produit> findByMagasinId(Long magasinId);
 
-	
+	public boolean existsProduitByNomPrdt(String nomPrdt);
+
+	List<Produit> findByNomPrdt(String keyword);
+
+	boolean existsProduitByCode(String code);
 
 	
 }

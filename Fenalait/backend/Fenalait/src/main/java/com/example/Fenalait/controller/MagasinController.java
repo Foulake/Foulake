@@ -30,14 +30,16 @@ public class MagasinController {
     public MagasinController(MagasinService magasinService) {
         this.magasinService = magasinService;
     }
-
+    
+    
+    @PostMapping("/add")
+    public ResponseEntity<MagasinRequestDto> createMagasin(@Valid @RequestBody MagasinRequestDto magasinRequestDto){
+        return new ResponseEntity<>(magasinService.createMagasin(magasinRequestDto), HttpStatus.CREATED);
+    }
    /**
     @PreAuthorize("hasRole('ADMIN')")
     // create blog magasin rest api
-    @PostMapping("/api/v1/magasins")
-    public ResponseEntity<MagasinRequestDto> createMagasin(@Valid @RequestBody MagasinRequestDto magasinRequestDto){
-        return new ResponseEntity<>(magasinService.createMagasin(magasinRequestDto), HttpStatus.CREATED);
-    } 	**/
+   	**/
 
    
 

@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.Fenalait.dto.CategoryDto;
 import com.example.Fenalait.dto.CategoryResponse;
+import com.example.Fenalait.model.Category;
 
 @Service
 public interface CategoryService {
@@ -19,4 +20,6 @@ public interface CategoryService {
     void deleteCategoryById(Long id);
 
 	CategoryResponse searchCategoryFull(int pageNo, int pageSize, String sortBy, String sortBy2, String keywords);
+
+	Category getCategory(Long categoryId);
 }

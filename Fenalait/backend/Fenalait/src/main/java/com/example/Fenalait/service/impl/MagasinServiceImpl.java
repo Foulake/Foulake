@@ -45,6 +45,12 @@ private LocaliteRepository localiteRepository;
 	}
 
 	@Override
+	public Magasin getMagasin(Long magasinId) {
+		return magasinRepository.findById(magasinId).orElseThrow(
+		() -> new ResourceNotFoundException("Il n'existe pas de magasin avec id : " + magasinId, null, magasinId));	
+	}
+	
+	@Override
 	public MagasinResponse getAllMagasins(int pageNo, int pageSize, String sortBy, String sortDir) {
 		Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();

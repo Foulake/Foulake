@@ -11,7 +11,9 @@ import org.springframework.stereotype.Service;
 
 import com.example.Fenalait.dto.ClientDto;
 import com.example.Fenalait.dto.ClientResponse;
+import com.example.Fenalait.exception.ResourceAlredyExistException;
 import com.example.Fenalait.exception.ResourceNotFoundException;
+import com.example.Fenalait.exception.ResourceNotFoundExceptions;
 import com.example.Fenalait.model.Client;
 import com.example.Fenalait.repository.ClientRepository;
 import com.example.Fenalait.service.ClientService;
@@ -29,6 +31,10 @@ private ClientRepository clientRepository;
 	public ClientDto createClient(ClientDto clientDto) {
 		 // convert DTO to entity
         Client client = mapToEntity(clientDto);
+        if(clientRepository.existsClientByTelClient(clientDto.getTelClient())) {
+    		throw new ResourceAlredyExistException(" Il existe bien un client avec cet numéro de téléphone : " +clientDto.getTelClient());
+    }
+        
         Client newClient = clientRepository.save(client);
 
         // convert entity to DTO
@@ -134,5 +140,12 @@ private ClientRepository clientRepository;
 
         return clientResponse;
 
+	}
+
+	@Override
+	public Client getClient(Long clientId) {
+		Client client = clientRepository.findById(clientId)
+				.orElseThrow(() -> new ResourceNotFoundExceptions("Il n'existe pas de client avec id : " + clientId));
+		return client;
 	}
 }

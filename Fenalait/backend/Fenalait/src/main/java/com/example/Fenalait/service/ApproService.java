@@ -1,45 +1,29 @@
 package com.example.Fenalait.service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import com.example.Fenalait.dto.ApproDto;
+import com.example.Fenalait.dto.ApproResponse;
+import com.example.Fenalait.model.Approvissionnement;
 
 @Service
 public interface ApproService {
 	
-	ApproDto createAppro(Long fournisseurId, ApproDto approDto);
+	
+	
+	public ApproResponse addApprovissionnement(ApproDto approDto );
+	public ApproResponse getApprovissionnementById(Long approId);
+	public Approvissionnement getApprovissionnement(Long approId);
+	public List<ApproResponse> getApprovissionnements();
+	public ApproResponse getAllApprovissionnements(int pageNo, int pageSize, String sortBy, String sortDir);
+	public ApproResponse deleteApprovissionnement(Long approId);
+	public ApproResponse editApprovissionnement(Long approId, ApproDto approDto);
+	
+	public ApproResponse searchApprovissionnementFull(int pageNo, int pageSize, String sortBy, String sortDir, String keyword);
 
-	 List<ApproDto> getApprosByFournisseurId(Long fournisseurId);
-
-	 ApproDto getApproById(Long fournisseurId, Long approId);
-
-	 ApproDto updateAppro(Long fournisseurId, Long approId, ApproDto approDto);
-
-	 void deleteAppro(Long fournisseurId, Long approId);
-	 
-	 
-	 
-	 ApproDto createProduitAppro(Long produitId, ApproDto approDto);
-
-	 List<ApproDto> getApprosByProduitId(Long produitId);
-
-	 ApproDto getProduitApproById(Long produitId, Long approId);
-
-	 ApproDto updateProduitAppro(Long produitId, Long approId, ApproDto approDto);
-
-	 void deleteProduitAppro(Long produitId, Long approId);
-
-	 
-	 
-	 ApproDto createPaiementAppro(Long paiementId, ApproDto approDto);
-
-	 List<ApproDto> getApprosByPaiementId(Long paiementId);
-
-	 ApproDto getPaiementApproById(Long paiementId, Long approId);
-
-	 ApproDto updatePaiementAppro(Long paiementId, Long approId, ApproDto approDto);
-
-	 void deletePaiementAppro(Long paiementId, Long approId);
+	public List<Approvissionnement> approvissionnementJourInterval(LocalDate dateStart, LocalDate dateEnd );
+	
 }
